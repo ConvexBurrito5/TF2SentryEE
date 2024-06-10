@@ -9,3 +9,4 @@
 | servo.step_max | Way to step to max and have a way to terminate midway if an event(Python Event class) is set.         | event:Event the event to check for    |  None   |    :x:    |
 | shoot_one_shot    | Fire a single bullet.          | None    |  None          |    :x:    |
 | Spray full auto | Shoot until event is set to false. | event: Event the event to check for | None | :x: |
+| led.state | Update the LED STATE | led state | None | :x: |
