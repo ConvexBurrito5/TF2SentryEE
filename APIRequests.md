@@ -2,8 +2,8 @@
 
 | Function Name  | Description                | Params  | Return Values  | Complete? |
 | -------------  | ---                        | ---     | ---            | ---       |
-| --.getXAngleRaw()-- helper method    | Updates X&Y position and returns raw X Poteometer data  | None    |  angle:int raw poteometer data of the X servo.    |    ✔️    |
-| --.getYAngleRaw()-- helper method    | Updates X&Y position and returns raw Y Poteometer data  | None    |  angle:int raw poteometer data of the Y servo.    |    ✔️    |
+| ~~.getXAngleRaw()~~ helper method    | Updates X&Y position and returns raw X Poteometer data  | None    |  angle:int raw poteometer data of the X servo.    |    ✔️    |
+| ~~.getYAngleRaw()~~ helper method    | Updates X&Y position and returns raw Y Poteometer data  | None    |  angle:int raw poteometer data of the Y servo.    |    ✔️    |
 | .set_x_angle()    | Pass 0-270 in, Sends CMD for motor to turn  | angle: int The angle to turn servo   |  check:boolean If angle > 270, T   |    ✔️    |
 | .set_y_angle()    | Pass 0-180 in, Sends CMD for motor to turn  | angle: int The angle to turn servo    |  check:boolean If angle > 180, T    |    ✔️    |
 | .pause_movement()    | Gets current X&Y Degree, and sends movement CMD for that Degree   | None    |  None    |    ✔️    |
