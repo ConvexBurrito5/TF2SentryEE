@@ -7,7 +7,7 @@
 | .set_x_angle()    | Pass 0-270 in, Sends CMD for motor to turn  | angle: int The angle to turn servo   |  check:boolean If angle > 270, T   |    ✔️    |
 | .set_y_angle()    | Pass 0-180 in, Sends CMD for motor to turn  | angle: int The angle to turn servo    |  check:boolean If angle > 180, T    |    ✔️    |
 | .pause_movement()    | Gets current X&Y Degree, and sends movement CMD for that Degree   | None    |  None    |    ✔️    |
-| .idle()    | Incraments servo pos 1 deg every 25 MS, gives slow idle state  | stopCon:Event exits the method when .isSet()  |  None    |    ✔️    |
+| .idle()    | Increments servo pos 1 deg every 25 MS, gives slow idle state  | stopCon:Event exits the method when .isSet()  |  None    |    ✔️    |
 | .fire()    | Fires one Shot  | None    |  None    |    :x:    |
 | .led_state()    | sets Led state  |  state:bool sets led   |  None    |    :x:    |
 | .get_x_angle()    | Wrapper: calls .getXAngleRaw(), converts to Degrees  | None    |  angle:float The angle the X servo is in.    |    ✔️    |
