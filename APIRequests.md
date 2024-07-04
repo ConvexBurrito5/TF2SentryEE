@@ -16,4 +16,4 @@
 | .set_y_min()    | Wrapper: calls .setXAngle(), Send 0 Degrees  | None    |  None    |    ✔️    |
 | .set_x_max()    | Wrapper: calls .setXAngle(), Send 270 Degrees  | None    |  None    |    ✔️    |
 | .set_y_max()    | Wrapper: calls .setXAngle(), Send 180 Degrees  | None    |  None    |    ✔️    |
-| ._update_position()   | Way to get current angle.  | None    |  angle:float The angle the servo is in.    |    ✔️     |
+| ~~._update_position()~~ helper method   | Way to get current angle.  | None    |  angle:float The angle the servo is in.    |    ✔️     |
