@@ -2,12 +2,18 @@
 
 | Function Name  | Description                | Params  | Return Values  | Complete? |
 | -------------  | ---                        | ---     | ---            | ---       |
-| servo.angle    | Way to get current angle.  | None    |  angle:float The angle the servo is in.    |    :x:    |
-| servo.max      | Spin to max angle          | None    |  None          |    :x:    |
-| servo.min      | Spin to min angle          | None    |  None          |    :x:    |
-| servo.set_angle      | Spin to specified angle, abstract version of max and min.        | Angle:float    |  None          |    :x:    |
-| servo.step_min | Way to step to min and have a way to terminate midway if an event (Python Event class) is set.         | event:Event the event to check for   |  None  |    :x:    |
-| servo.step_max | Way to step to max and have a way to terminate midway if an event(Python Event class) is set.         | event:Event the event to check for    |  None   |    :x:    |
-| shoot_one_shot    | Fire a single bullet.          | None    |  None          |    :x:    |
-| Spray full auto | Shoot until event is set to false. | event: Event the event to check for | None | :x: |
-| led.state | Update the LED STATE | led state | None | :x: |
+| .getXAngleRaw()    | Updates X&Y position and returns raw X Poteometer data  | None    |  angle:int raw poteometer data of the X servo.    |    :x:    |
+| .getYAngleRaw()    | Updates X&Y position and returns raw Y Poteometer data  | None    |  angle:int raw poteometer data of the Y servo.    |    :x:    |
+| .setXAngle()    | Pass 0-270 in, Sends CMD for motor to turn  | angle: int The angle to turn servo   |  check:boolean If angle > 270, T   |    :x:    |
+| .setYAngle()    | Pass 0-180 in, Sends CMD for motor to turn  | angle: int The angle to turn servo    |  check:boolean If angle > 180, T    |    :x:    |
+| .pauseMovement()    | Gets current X&Y Degree, and sends movement CMD for that Degree   | None    |  None    |    :x:    |
+| .idle()    | Incraments servo pos 1 deg every 25 MS, gives slow idle state  | stopCon:Event exits the method when .isSet()  |  None    |    :x:    |
+| .fire()    | Fires one Shot  | None    |  None    |    : :    |
+| .led_state()    | sets Led state  |  state:bool sets led   |  None    |    : :    |
+| .getXAngle()    | Wrapper: calls .getXAngleRaw(), converts to Degrees  | None    |  angle:float The angle the X servo is in.    |    :x:    |
+| .getYAngle()    | Wrapper: calls .getYAngleRaw(), converts to Degrees  | None    |  angle:float The angle the Y servo is in.    |    :x:    |
+| .setXMin()    | Wrapper: calls .setXAngle(), Send 0 Degrees  | None    |  None    |    :x:    |
+| .setYMin()    | Wrapper: calls .setXAngle(), Send 0 Degrees  | None    |  None    |    :x:    |
+| .setXMax()    | Wrapper: calls .setXAngle(), Send 270 Degrees  | None    |  None    |    :x:    |
+| .setYMax()    | Wrapper: calls .setXAngle(), Send 180 Degrees  | None    |  None    |    :x:    |
+| ._updatePosition()   | Way to get current angle.  | None    |  angle:float The angle the servo is in.    |    :x:    |
