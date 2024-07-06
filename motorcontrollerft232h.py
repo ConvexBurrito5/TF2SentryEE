@@ -54,14 +54,14 @@ class MotorControllerFT232H(MotorController):
     def set_x_angle(self, angle: int) -> bool:
         # Sets the current angle. MAX 270 DEG
         if angle > 270:
-            return True
+            return False
         else:
             self.xAxis.angle = angle
 
     def set_y_angle(self, angle: int) -> bool:
         # Sets the current angle. Max is 180 DEG
         if angle > 180:
-            return True
+            return False
         else:
             self.xAxis.angle = angle
 
@@ -69,7 +69,7 @@ class MotorControllerFT232H(MotorController):
         xCurrent = self.get_x_angle()
         xNew = angle + xCurrent
         if 0 > xNew or 270 < xNew:
-            return True
+            return False
         else:
             self.set_x_angle(int(xNew))
 
@@ -77,7 +77,7 @@ class MotorControllerFT232H(MotorController):
         yCurrent = self.get_x_angle()
         yNew = angle + yCurrent
         if 0 > yNew or 270 < yNew:
-            return True
+            return False
         else:
             self.set_x_angle(int(yNew))
 
