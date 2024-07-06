@@ -6,7 +6,7 @@ from board import SDA, SCL
 from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
 from threading import Event
-from IO.motorcontroller import MotorController
+from ..IO.motorcontroller import MotorController
 
 
 class MotorControllerFT232H(MotorController):

@@ -1,4 +1,4 @@
-from IO.soundcontroller import SoundController
+from ..IO.soundcontroller import SoundController
 
 class SoundControllerFT232H(SoundController):
 

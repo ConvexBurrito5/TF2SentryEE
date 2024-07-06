@@ -1,4 +1,4 @@
-from IO.peripheralcontroller import PeripheralController
+from ..IO.peripheralcontroller import PeripheralController
 
 
 class PeripheralControllerFT232H(PeripheralController):
