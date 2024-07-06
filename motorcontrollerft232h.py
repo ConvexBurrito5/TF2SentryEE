@@ -7,8 +7,8 @@ from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
 from threading import Event
 
-
-class FT232H:
+#(Motorcontroller)
+class MotorControllerFT232H:
 
     def __init__(self):
         self.x_pos = None
