@@ -38,7 +38,7 @@ With that out of the way, lets look into what we have completed.
 ## Features
 - Detection and tracking of a person, See [Maiikiru's CV Repo](https://github.com/Maiikiru/TF2SentrySource)
 - We have provided [Maiikiru's CV Repo](https://github.com/Maiikiru/TF2SentrySource) with standard API interfaces so it easy to implement multiple hardware solutions. So far:
-  - Raspberry Pi 4, See 'instructionFT232H.md'
+  - Raspberry Pi 5 (Please do not use a pi4, we tried to make it work, the performance is not good) , See 'instructionFT232H.md'
   - Standard laptop using [Adafruit's FT232H Breakout](https://www.adafruit.com/product/2264), See 'instructionRaspberryPi4.md'
 - There are 4 interfaces implemented in each solution
   - FiringController
