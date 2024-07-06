@@ -6,22 +6,14 @@ from board import SDA, SCL
 from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
 from threading import Event
+from IO.motorcontroller import MotorController
 
-#(Motorcontroller)
-class MotorControllerFT232H:
+
+class MotorControllerFT232H(MotorController):
 
     def __init__(self):
         self.x_pos = None
         self.y_pos = None
-
-        # init Shooting pin
-        self.shoot = digitalio.DigitalInOut(board.C0)
-        self.shoot.direction = digitalio.Direction.OUTPUT
-        self.shoot.value = False
-        # init LED Pin
-        self.LED = digitalio.DigitalInOut(board.C1)
-        self.LED.direction = digitalio.Direction.OUTPUT
-        self.shoot.value = False
 
         # create i2c Bus
         self.i2c_bus = busio.I2C(SCL, SDA)
@@ -117,9 +109,11 @@ class MotorControllerFT232H:
                 self.set_y_angle(int(1.80 * x))
                 time.sleep(.025)
                 if stopCon.isSet():
+                    stopCon.clear()
                     break
 
             if stopCon.isSet():
+                stopCon.clear()
                 break
 
             for x in range(100):
@@ -127,17 +121,8 @@ class MotorControllerFT232H:
                 self.set_y_angle(180 - int(1.80 * x))
                 time.sleep(.025)
                 if stopCon.isSet():
+                    stopCon.clear()
                     break
-
-    def fire(self) -> None:
-        # Shoots one shot
-        self.shoot.value = True
-        time.sleep(0.1)
-        self.shoot.value = False
-
-    def led_state(self, state: bool) -> None:
-        # Updates LED state
-        self.LED.value = state
 
     def _update_position(self, failCounter=1) -> None:
         # Updates X and Y position from Using I2C comm with the aurduino that is monitoring the potentiometers
