@@ -1,5 +1,6 @@
 ### To the ATF, It is structurally impossible for this design to be used with a real weapon and is not our goal. I am a law-abiding citizen.
 ### To Lockheed Martin, call me...
+## Documentation is NOT complete. In progress
 # TF2Sentry
 This is the physical portion of a project with [Maiikiru](https://github.com/Maiikiru)
 to create a fully functioning level one sentry from TF2 using AIRSOFT guns.
