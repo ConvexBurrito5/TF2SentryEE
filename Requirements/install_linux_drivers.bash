@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#TODO: port this script to Steven's repo.
-
 # STEP 1: Confirm the directory of where venv will be installed (or is already installed).
 if [[ -z "$1" ]];then
     echo No Virtual Environment path specified.
