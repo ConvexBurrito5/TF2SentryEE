@@ -15,11 +15,11 @@ else
     cd "$1"
 fi
 
-# STEP 1: install libusb if not installed.
+# STEP 2: install libusb if not installed.
 sudo apt-get install libusb-1.0 -y
 
 ruleDest="/etc/udev/rules.d/11-ftdi.rules"
-# STEP2: create the rules file.
+# STEP 3: create the rules file.
 sudo cat << EOF > "$ruleDest"
 # /etc/udev/rules.d/11-ftdi.rules
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", GROUP="plugdev", MODE="0666"
@@ -36,7 +36,7 @@ if [[ ! which python3 ]]; then
     sudo apt-get install python3 -y
 fi
 
-# STEP 4:
+# STEP 5:
 # Install the virtual environment if not already installed.
 if [[ ! -e ".venv/" ]]; then
     python3 -m venv .venv
@@ -53,13 +53,13 @@ elif [[ "$PWD/.venv" != "$VIRTUAL_ENV"]]; then
 fi
 echo Virtual Environment Successfully Activated ...
 
-# STEP 5: Install the pip dependencies from requirements file
+# STEP 6: Install the pip dependencies from requirements file
 ## Freely using pip now that we know that we are in the virtual environment.
 echo Install requirements ...
 cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null
 python3 -m pip install -r VanillaReqs/requirements.txt
 
-# STEP 6: Insert the BLINKA_FT232H=1 into bashrc if it's not already there
+# STEP 7: Insert the BLINKA_FT232H=1 into bashrc if it's not already there
 rcFile="~/.bashrc"
 
 prop="BLINKA_FT232H"
