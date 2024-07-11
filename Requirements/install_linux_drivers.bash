@@ -30,7 +30,7 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6015", GROUP="plugde
 EOF
 echo Rules file created at "$ruleDest"
 
-# STEP 3: install python if not installed.
+# STEP 4: install python if not installed.
 if [[ ! which python3 ]]; then
     echo "You must have python installed, installing python from apt..."
     sudo apt-get install python3 -y
