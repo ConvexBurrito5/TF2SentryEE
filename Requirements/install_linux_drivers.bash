@@ -20,7 +20,7 @@ sudo apt-get install libusb-1.0 -y
 
 ruleDest="/etc/udev/rules.d/11-ftdi.rules"
 # STEP 3: create the rules file.
-sudo cat << EOF > "$ruleDest"
+sudo -u cat << EOF > "$ruleDest"
 # /etc/udev/rules.d/11-ftdi.rules
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", GROUP="plugdev", MODE="0666"
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6011", GROUP="plugdev", MODE="0666"
@@ -45,7 +45,7 @@ fi
 if [[ -z "$VIRTUAL_ENV" ]]; then
     source .venv/bin/activate
 # In case you have a different venv activated.
-elif [[ "$PWD/.venv" != "$VIRTUAL_ENV"]]; then
+elif [[ "$PWD/.venv" != "$VIRTUAL_ENV" ]]; then
     deactivate
     # Just in case you did something funky with your venv.
     source deactivate
