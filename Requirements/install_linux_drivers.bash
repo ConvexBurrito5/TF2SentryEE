@@ -20,7 +20,7 @@ sudo apt-get install libusb-1.0 -y
 
 ruleDest="/etc/udev/rules.d/11-ftdi.rules"
 # STEP 3: create the rules file.
-sudo -u cat << EOF > "$ruleDest"
+sudo cat << EOF > "$ruleDest"
 # /etc/udev/rules.d/11-ftdi.rules
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", GROUP="plugdev", MODE="0666"
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6011", GROUP="plugdev", MODE="0666"
