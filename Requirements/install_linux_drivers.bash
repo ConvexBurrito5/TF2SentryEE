@@ -19,8 +19,8 @@ fi
 sudo apt-get install libusb-1.0 -y
 
 ruleDest="/etc/udev/rules.d/11-ftdi.rules"
-# STEP 3: create the rules file.
-sudo cat << EOF > "$ruleDest"
+# STEP2: create the rules file.
+cat << EOF | sudo tee "$ruleDest"
 # /etc/udev/rules.d/11-ftdi.rules
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", GROUP="plugdev", MODE="0666"
 SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6011", GROUP="plugdev", MODE="0666"
@@ -60,7 +60,7 @@ cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null
 python3 -m pip install -r VanillaReqs/requirements.txt
 
 # STEP 7: Insert the BLINKA_FT232H=1 into bashrc if it's not already there
-rcFile="~/.bashrc"
+rcFile=~/".bashrc"
 
 prop="BLINKA_FT232H"
 val="1"
