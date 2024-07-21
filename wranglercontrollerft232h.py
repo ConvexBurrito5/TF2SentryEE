@@ -32,7 +32,7 @@ class WranglerControllerFT232H(WranglerController):
         else:
             self.WranglerStatus.clear()
 
-    def read_radio(self) -> (bool, WranglerController.Direction):
+    def read_radio(self) -> tuple[bool, WranglerController.Direction]:
 
         while not self.i2c_bus.try_lock():
             pass
@@ -46,23 +46,19 @@ class WranglerControllerFT232H(WranglerController):
             # TBD RETURNCASEMODIFIED
             if data[0] == 'N':
                 return False, WranglerController.Direction.NOP
-            elif data[0] == 'F':
-                if data[1] == "L":
-                    return True, WranglerController.Direction.LEFT
-                elif data[1] == "R":
-                    return True, WranglerController.Direction.RIGHT
-                elif data[1] == "U":
-                    return True, WranglerController.Direction.UP
-                elif data[1] == "D":
-                    return True, WranglerController.Direction.DOWN
-            elif data[0] == "L":
-                return False, WranglerController.Direction.LEFT
+            if data[0] == 'F':
+                tempData = True
+            else:
+                tempData = False
+
+            if data[0] == "L":
+                return tempData, WranglerController.Direction.LEFT
             elif data[0] == "R":
-                return False, WranglerController.Direction.RIGHT
+                return tempData, WranglerController.Direction.RIGHT
             elif data[0] == "U":
-                return False, WranglerController.Direction.UP
+                return tempData, WranglerController.Direction.UP
             elif data[0] == "D":
-                return False, WranglerController.Direction.DOWN
+                return tempData, WranglerController.Direction.DOWN
         except:
             # Error catching. Happens when the aurduino cant be pinged from the I2C bus
             print("Aurduino not connected")
