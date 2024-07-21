@@ -32,7 +32,7 @@ class WranglerControllerFT232H(WranglerController):
         else:
             self.WranglerStatus.clear()
 
-    def read_radio(self) -> WranglerController.Direction:
+    def read_radio(self) -> (bool, WranglerController.Direction):
 
         while not self.i2c_bus.try_lock():
             pass
@@ -42,18 +42,27 @@ class WranglerControllerFT232H(WranglerController):
             self.i2c_bus.readfrom_into(0x55, result)
             # Convert bits into ints and load into array
             self.i2c_bus.unlock()
-            if result[8] == 'N':
-                return WranglerController.Direction.NOP
-            elif result[8] == "L":
-                return WranglerController.Direction.LEFT
-            elif result[8] == "R":
-                return WranglerController.Direction.RIGHT
-            elif result[8] == "U":
-                return WranglerController.Direction.UP
-            elif result[8] == "D":
-                return WranglerController.Direction.DOWN
-            elif result[8] == "S":
-                return WranglerController.Direction.SHOOT
+            data = result[8]
+            # TBD RETURNCASEMODIFIED
+            if data[0] == 'N':
+                return False, WranglerController.Direction.NOP
+            elif data[0] == 'F':
+                if data[1] == "L":
+                    return True, WranglerController.Direction.LEFT
+                elif data[1] == "R":
+                    return True, WranglerController.Direction.RIGHT
+                elif data[1] == "U":
+                    return True, WranglerController.Direction.UP
+                elif data[1] == "D":
+                    return True, WranglerController.Direction.DOWN
+            elif data[0] == "L":
+                return False, WranglerController.Direction.LEFT
+            elif data[0] == "R":
+                return False, WranglerController.Direction.RIGHT
+            elif data[0] == "U":
+                return False, WranglerController.Direction.UP
+            elif data[0] == "D":
+                return False, WranglerController.Direction.DOWN
         except:
             # Error catching. Happens when the aurduino cant be pinged from the I2C bus
             print("Aurduino not connected")
@@ -62,9 +71,9 @@ class WranglerControllerFT232H(WranglerController):
             # Finish by giving up the bus
             self.i2c_bus.unlock()
 
-        #L, R, U, D, S
+        #L, R, U, D, F
         #LEFT (L) - X neg 3 deg
         #RIGHT (R) - X pos 3 deg
         #UP (U) - Y pos 3 deg
         #DOWN (D) - Y neg 3 deg
-        #SHOOT (S) - Shoot 1 Shot
+        #SHOOT (F) - Shoot 1 Shot
