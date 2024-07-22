@@ -33,3 +33,8 @@ DEFINE max_y_angle := 180
 | Function Name  | Description                | Params  | Return Values  | Complete? |
 | -------------  | ---                        | ---     | ---            | ---       |
 | .led_state()    | sets Led state  |  state:bool sets led   |  None    |    ✔️    |
+
+# Wrangler Controller
+| Function Name  | Description                                         | Params | Return Values | Complete? |
+|----------------|-----------------------------------------------------|--------| ---            | ---       |
+| .check_state() | If Pin Set HI set event true, if pin low, set false | None   |  status:event    |    ✔️    |
