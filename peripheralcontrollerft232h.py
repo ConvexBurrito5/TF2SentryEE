@@ -1,4 +1,6 @@
-from ..IO.peripheralcontroller import PeripheralController
+import digitalio
+import board
+from IO.peripheralcontroller import PeripheralController
 
 
 class PeripheralControllerFT232H(PeripheralController):
@@ -7,7 +9,7 @@ class PeripheralControllerFT232H(PeripheralController):
         # init LED Pin
         self.LED = digitalio.DigitalInOut(board.C1)
         self.LED.direction = digitalio.Direction.OUTPUT
-        self.shoot.value = False
+        self.LED.value = False
 
     def led_state(self, state: bool) -> None:
         # Updates LED state
