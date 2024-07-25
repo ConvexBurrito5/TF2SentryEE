@@ -12,8 +12,8 @@ class SoundControllerFT232H(SoundController):
         self.sentry_spot_path = os.path.join(parent_dir, "SoundFiles", "Sentry_spot_client.wav")
         pass
 
-    def sentry_scan_sound(self):
+    def play_idle_beeping(self):
         playsound(self.sentry_scan_path)
 
-    def sentry_spot_client(self):
+    def play_target_spotted(self):
         playsound(self.sentry_spot_path)
