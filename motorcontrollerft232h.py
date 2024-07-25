@@ -23,6 +23,7 @@ class MotorControllerFT232H(MotorController):
             # Create the PCA9685 slave on the I2C bus
             print("test1")
             self.PCA = PCA9685(self.i2c_bus)
+            print("test1.5")
             # Setup the SCL Freq
             self.PCA.frequency = 50
             self.PCA.channels[0].duty_cycle = 0x7FFF
