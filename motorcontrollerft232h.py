@@ -51,7 +51,7 @@ class MotorControllerFT232H(MotorController):
     """
     def get_x_angle(self) -> float:
         # Returns current angle in Percentage of 100
-        return round(self.get_x_angle() / self.MAX_X_ANGLE,12)
+        return round(self.get_x_angle_raw() / self.MAX_X_ANGLE,12)
 
     """
     Returns the YZ angle to 12 decimal places as to match gpiozero.
@@ -59,7 +59,7 @@ class MotorControllerFT232H(MotorController):
     """
     def get_y_angle(self) -> float:
         # Returns current angle in Percentage of 100
-        return round(self.get_y_angle() / self.MAX_Y_ANGLE,12)
+        return round(self.get_y_angle_raw() / self.MAX_Y_ANGLE,12)
 
     """
     Pass 0-MAX_X_ANGLE in, Sends CMD for XY(X) servo motor to turn.
