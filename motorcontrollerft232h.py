@@ -1,7 +1,5 @@
 import time
-import board
 import busio
-import digitalio
 from board import SDA, SCL
 from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
