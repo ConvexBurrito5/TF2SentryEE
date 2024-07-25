@@ -24,7 +24,7 @@ class WranglerControllerFT232H(WranglerController):
     #Checks the pin and updates event for the brain
     #if pin is low for more than 2 seconds, wrangler
     #is turned off.
-    def check_state(self) -> None:
+    def check_status(self) -> None:
         if self.statusPin.value:
             self.WranglerStatus.set()
         else:
