@@ -21,13 +21,16 @@ class MotorControllerFT232H(MotorController):
 
         try:
             # Create the PCA9685 slave on the I2C bus
+            print("test1")
             self.PCA = PCA9685(self.i2c_bus)
             # Setup the SCL Freq
             self.PCA.frequency = 50
             self.PCA.channels[0].duty_cycle = 0x7FFF
             # DEFINE the servos HERE. In this case there is only one PCA9685 board here.
             # 500 & 2500 are the magic numbers for the Servos. Ripped off amazon page
+            print("test2")
             self.xAxis = servo.Servo(pwm_out=self.PCA.channels[0], min_pulse=500, max_pulse=2500, actuation_range=self.MAX_X_ANGLE)
+            print("test3")
             self.yAxis = servo.Servo(pwm_out=self.PCA.channels[1], min_pulse=500, max_pulse=2500, actuation_range=self.MAX_Y_ANGLE)
             print("Initialization of FT232H MotorController")
 
