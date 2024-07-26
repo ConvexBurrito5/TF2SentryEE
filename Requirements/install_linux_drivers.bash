@@ -1,5 +1,9 @@
 #!/bin/bash
 
+## Required Input: You need to pass the directory of where the venv will be installed as the first argument.
+
+set -e
+
 # STEP 1: Confirm the directory of where venv will be installed (or is already installed).
 if [[ -z "$1" ]];then
     echo No Virtual Environment path specified.
