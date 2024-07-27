@@ -38,31 +38,24 @@ class MotorControllerFT232H(MotorController):
             print("PCA Not Connected")
             self.i2c_bus.unlock()
 
-    def get_x_angle_raw(self) -> int:
-        # returns its current angle.
-        self._update_position()
-        return self._raw_x_pos
-
-    def get_y_angle_raw(self) -> int:
-        # returns its current angle.
-        self._update_position()
-        return self._raw_y_pos
-
     """
     Returns the XY angle to 12 decimal places as to match gpiozero.
     Returns: the angle that the XY servo is currently in.
     """
-    def get_x_angle(self) -> float:
-        # Returns current angle in Percentage of 100
-        return round(self.get_x_angle_raw() / self.MAX_X_ANGLE,12)
+    def get_x_angle(self) -> int:
+        # returns its current angle.
+        self._update_position()
+        return round(self._raw_x_pos,12)
 
     """
     Returns the YZ angle to 12 decimal places as to match gpiozero.
     Returns: the angle that the YZ servo is currently in.
     """
-    def get_y_angle(self) -> float:
-        # Returns current angle in Percentage of 100
-        return round(self.get_y_angle_raw() / self.MAX_Y_ANGLE,12)
+    def get_y_angle(self) -> int:
+        # returns its current angle.
+        self._update_position()
+        return round(self._raw_y_pos,12)
+
 
     """
     Pass 0-MAX_X_ANGLE in, Sends CMD for XY(X) servo motor to turn.
