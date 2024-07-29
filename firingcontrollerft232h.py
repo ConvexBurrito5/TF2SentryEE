@@ -12,10 +12,12 @@ class FiringControllerFT232H(FiringController):
         # init Shooting pin
         self.shoot = digitalio.DigitalInOut(board.C0)
         self.shoot.direction = digitalio.Direction.OUTPUT
-        self.shoot.value = False
+        # For the switches I bought, True = Closed, False = Open
+        self.shoot.value = True
 
     def fire(self) -> None:
         # Shoots one shot
-        self.shoot.value = True
-        time.sleep(0.1)
+        # For the switches I bought, True = Closed, False = Open
         self.shoot.value = False
+        time.sleep(.15)
+        self.shoot.value = True

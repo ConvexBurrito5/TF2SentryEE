@@ -16,6 +16,8 @@ class MotorControllerFT232H(MotorController):
         self.MAX_Y_ANGLE = 180
         self.total_fails = 0
 
+        #print(SCL)
+        #print(SDA)
         # create i2c Bus
         self.i2c_bus = busio.I2C(SCL, SDA)
 
