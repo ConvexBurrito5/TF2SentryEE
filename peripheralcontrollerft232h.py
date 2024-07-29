@@ -7,10 +7,13 @@ class PeripheralControllerFT232H(PeripheralController):
 
     def __init__(self):
         # init LED Pin
-        self.LED = digitalio.DigitalInOut(board.C1)
-        self.LED.direction = digitalio.Direction.OUTPUT
-        self.LED.value = False
+        self._LED = digitalio.DigitalInOut(board.C1)
+        self._LED.direction = digitalio.Direction.OUTPUT
+        # For the switches I bought, True = Closed, False = Open
+        self._LED.value = True
 
     def led_state(self, state: bool) -> None:
         # Updates LED state
-        self.LED.value = state
+        # For the switches I bought, True = Closed, False = Open
+        # Accepts the users standard logic and inverts: of True = Light on, False = Light off
+        self._LED.value = not state
