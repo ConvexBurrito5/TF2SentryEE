@@ -19,5 +19,5 @@ class FiringControllerFT232H(FiringController):
         # Shoots one shot
         # For the switches I bought, True = Closed, False = Open
         self.shoot.value = False
-        time.sleep(.15)
+        time.sleep(.5)
         self.shoot.value = True
