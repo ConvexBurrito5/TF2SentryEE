@@ -14,4 +14,5 @@ class SoundControllerFT232H(SoundController):
         playsound(self.sentry_scan_path)
 
     def play_target_spotted(self):
+        #This plays "spotted" sound when called
         playsound(self.sentry_spot_path)
