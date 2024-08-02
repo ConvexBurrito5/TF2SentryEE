@@ -24,7 +24,7 @@ To jump straight into it see the instruction folder.
     - I2C Communication, learned how to implement and write code to utilize it. 
     - Radio, utilizing 2.4Ghz wireless transceiver modules to talk from the turret to the wrangler
   - Power!
-    - The turrent and wrangler run off batteries
+    - The turret and wrangler run off batteries
     - 7v, 12v, 6v was all required. Got to use Buck DC voltage regulators.
     - Load calculation to make sure at least 5 hours of battery life.
   - Circuitry!
