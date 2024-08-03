@@ -25,13 +25,15 @@ To jump straight into it see the instruction folder.
     - Radio, utilizing 2.4Ghz wireless transceiver modules to talk from the turret to the wrangler
   - Power!
     - The turret and wrangler run off batteries
-    - 7v, 12v, 6v was all required. Got to use Buck DC voltage regulators.
+    - 7.6v, 12v, 9.2v was all required. Got to use Buck DC voltage regulators.
     - Load calculation to make sure at least 5 hours of battery life.
   - Circuitry!
     - Circuitry to be able to plug in the turret without removing the battery. Same for Wrangler.
-  - Working with Motors/Servos with control from both I2C and PWM pins.
-  - Improved my coding skill, Arduino(C++), Python.
+  - Coding!
+    - Python - My first real project in python. I'm typically a java slob so its a little bit of a culture shock. But I'm glad I get to learn.
+    - Arduino(C++) - Got to continue to hone my skills.
   - Improved my 3D printing skill... and gotten a sizeable print farm out of it.
+  - Working with Motors/Servos with control from both I2C and PWM.
 
 
 
@@ -53,3 +55,8 @@ With that out of the way, lets look into what we have completed.
     - Handles all the sound, runs off of the devices default speaker.
 - If a switch on the wrangler is turned on, automatic movement from [Maiikiru's CV Repo](https://github.com/Maiikiru/TF2SentrySource) will be disabled and overruled.
   - Input will be solely from the joystick and the firing button on the Wrangler.
+
+## How can you build one?
+Good news! Through many sleepless nights of documentation I have
+compiled instructions to build your own TF2 Turret. You can begin by 
+heading to the Instruction folder

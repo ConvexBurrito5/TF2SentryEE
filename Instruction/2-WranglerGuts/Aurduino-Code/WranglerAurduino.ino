@@ -2,7 +2,7 @@
 //TF2 Turrent Proj
 //Code on the Handheld Wrangler Componenet
 //On An Aurduino UNO:
-//Pinout..
+//For
 
 
 //Transmittal Code and implementation of NRF24L01
@@ -59,10 +59,9 @@ void setup() {
 void loop() {     
   //Logic for the command to be sent over NRF24L01
   char message = 'N';
-       //Nothing
-  //if(digitalRead(ctrlSwitch)){
+
+  //Logic for message
   if(!digitalRead(fire)){
-    //Serial.println("Fire");
     message = 'F';          //Fire
   }else{
     message = '';
@@ -81,10 +80,11 @@ void loop() {
     message = message +'D';          //Down
   }
 
+  //Broadcast data
   radio.write(&message, sizeof(message));
+  //Print data to serial for easy testing
   Serial.println(message);
-  //}
-  
 
+  //5ms delay to allow for hardware to process
   delay(5);
 }
