@@ -2,12 +2,16 @@
 ### To Lockheed Martin, call me...
 ## Documentation is NOT complete. In progress
 # TF2Sentry
-This is the physical portion of a project with [Maiikiru](https://github.com/Maiikiru)
+This is the physical portion of a project with [Maiikiru](https://github.com/Maiikiru) and Bradon
 to create a fully functioning level one sentry from TF2 using AIRSOFT guns.
+
+The work can be broken up into 3 repos.
+- [Maiikiru's CV Repo](https://github.com/Maiikiru/TF2SentrySource) for the brain and the logic
+- [Bradon's CAD Repo](https://github.com/ConvexBurrito5/TF2SentryCAD) for the physical CAD/STL files
+- [This Repo](https://github.com/ConvexBurrito5/TF2SentryEE) for circuitry and build instructions.
 
 This repo is my work (Steven Naliwajka/ConvexBurrito5), [GitHub](https://github.com/ConvexBurrito5), [LinkedIn](https://www.linkedin.com/in/steven-naliwajka-69564929a/)
 
-See [Maiikiru's CV Repo](https://github.com/Maiikiru/TF2SentrySource) for his magic!
 ### Two options for movement, 
 1) Maiikiru has gone through and created a Computer vision (CV) repo that automaticaly detects and targets people: [Maiikiru's CV Repo](https://github.com/Maiikiru/TF2SentrySource)
 2) I have also gone and created a remote control, [a slightly modified wrangler](https://www.youtube.com/watch?v=LYPzGNSfVRk)
