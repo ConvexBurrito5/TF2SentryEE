@@ -6,7 +6,7 @@ import board
 import digitalio
 from threading import Event
 from IO.wranglercontroller import WranglerController
-from Instruction.A1TurretGuts.LaptopFT232H.FT232HCode.singletonboardft232h import SingletonBoardFT232H
+from .singletonboardft232h import SingletonBoardFT232H
 
 
 class WranglerControllerFT232H(WranglerController):
