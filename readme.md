@@ -34,8 +34,9 @@ To jump straight into it see the instruction folder.
   - Circuitry!
     - Circuitry to be able to plug in the turret without removing the battery. Same for Wrangler.
   - Coding!
-    - Python - My first real project in python. I'm typically a java slob so its a little bit of a culture shock. But I'm glad I get to learn.
+    - Python - My first real project in python. I'm typically a java slob, so it was a little bit of a culture shock. But I'm glad I got to learn.
     - Arduino(C++) - Got to continue to hone my skills.
+    - Git - I was dragged into the 21st century by Maiikiru. I'm proficient at Git now.
   - Improved my 3D printing skill... and gotten a sizeable print farm out of it.
   - Working with Motors/Servos with control from both I2C and PWM.
 

@@ -5,6 +5,7 @@ from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
 from threading import Event
 from IO.motorcontroller import MotorController
+from Instruction.A1TurretGuts.LaptopFT232H.FT232HCode.singletonboardft232h import SingletonBoardFT232H
 
 
 class MotorControllerFT232H(MotorController):
@@ -19,7 +20,7 @@ class MotorControllerFT232H(MotorController):
         #print(SCL)
         #print(SDA)
         # create i2c Bus
-        self.i2c_bus = busio.I2C(SCL, SDA)
+        self.i2c_bus = SingletonBoardFT232H().i2c_bus
 
         try:
             # Create the PCA9685 slave on the I2C bus

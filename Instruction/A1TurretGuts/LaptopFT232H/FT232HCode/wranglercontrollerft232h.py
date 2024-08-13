@@ -3,11 +3,10 @@ from __future__ import annotations
 
 
 import board
-import busio
-from board import SDA, SCL
 import digitalio
 from threading import Event
 from IO.wranglercontroller import WranglerController
+from Instruction.A1TurretGuts.LaptopFT232H.FT232HCode.singletonboardft232h import SingletonBoardFT232H
 
 
 class WranglerControllerFT232H(WranglerController):
@@ -15,7 +14,7 @@ class WranglerControllerFT232H(WranglerController):
     def __init__(self):
         # Create wrangler status event
         self.WranglerStatus = Event()
-        self.i2c_bus = busio.I2C(SCL, SDA)
+        self.i2c_bus = SingletonBoardFT232H().i2c_bus
 
         #Create the pin for the wrangler to monitor.
         self.statusPin = digitalio.DigitalInOut(board.C1)
