@@ -35,7 +35,7 @@ EOF
 echo Rules file created at "$ruleDest"
 
 # STEP 4: install python if not installed.
-if [[ ! "which python3" ]]; then
+if ! command -v python3 >/dev/null 2>&1; then
     echo "You must have python installed, installing python from apt..."
     sudo apt-get install python3 -y
 fi
