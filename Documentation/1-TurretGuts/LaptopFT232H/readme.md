@@ -15,8 +15,7 @@ Flash your Aurduino using the provided 'Receiver-Turret.ino' file.
 ### 2. Setup your linux instance
 Inside your linux machine, open terminal and paste
 ```
-git clone --recursive 
-https://github.com/Maiikiru/TF2SentrySource.git "SentryGun"
+git clone --recursive git@github.com:Maiikiru/TF2SentrySource.git "SentryGun"
 cd SentryGun
 bash "RequirementsFiles/install_linux.bash"
 ```

@@ -37,28 +37,33 @@ class WranglerControllerFT232H(WranglerController):
             result = bytearray(9)
             # Address of aurduino is 0x55, load data into it
             self.i2c_bus.readfrom_into(0x55, result)
+            #NOTE, I2C bus doubles the data passed through.
             # Convert bits into ints and load into array
             self.i2c_bus.unlock()
-            data = result[8]
+            print(result)
+            #data = result[8]
+            data = [int(byte) for byte in result]
             # TBD RETURNCASEMODIFIED
-            if data[0] == 'N':
+            print("WRANGLERDATA!!!")
+            print(data)
+            if data[8] == 'N':
                 return False, WranglerController.Direction.NOP
-            if data[0] == 'F':
+            if data[8] == 'F':
                 tempData = True
             else:
                 tempData = False
 
-            if data[0] == "L":
+            if data[8] == "L":
                 return tempData, WranglerController.Direction.LEFT
-            elif data[0] == "R":
+            elif data[8] == "R":
                 return tempData, WranglerController.Direction.RIGHT
-            elif data[0] == "U":
+            elif data[8] == "U":
                 return tempData, WranglerController.Direction.UP
-            elif data[0] == "D":
+            elif data[8] == "D":
                 return tempData, WranglerController.Direction.DOWN
         except:
             # Error catching. Happens when the aurduino cant be pinged from the I2C bus
-            print("Aurduino not connected")
+            print("Aurduino not connected(Wrangler). I2C returning Bad Data")
             self.i2c_bus.unlock()
         finally:
             # Finish by giving up the bus

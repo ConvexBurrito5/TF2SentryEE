@@ -2,8 +2,7 @@
 //TF2 Turret Proj
 //Code on the slave turret Componenet
 //On An Aurduino UNO:
-//Pinout..
-
+//See Attached Aurduino PNG for pinout
 
 
 //Transmittal Code and implementation of NRF24L01
@@ -96,18 +95,14 @@ void loop() {
 
   //Configuring the NRF24L01
   radio.startListening();
+  char message = 'N';
   if (radio.available()) {
-    char message = 'N';
     //Intake message, sets message = to received data
     radio.read(&message, sizeof(message));
-    //Moves message into an array
-    myData[4] = message;
-    //Serial.println(message);
-  } else {
-    //If no radio available to read from... set output = null
-    char message = NULL;
-    myData[4] = message;
+    Serial.println(message);
   }
+  //Moves message into an array
+  myData[4] = message;
   delay(5);
 
   //Close out of the radio

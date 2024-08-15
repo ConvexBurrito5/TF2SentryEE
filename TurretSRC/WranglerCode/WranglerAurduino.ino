@@ -64,7 +64,7 @@ void loop() {
   if(!digitalRead(fire)){
     message = 'F';          //Fire
   }else{
-    message = '';
+    message = NULL;
   }
   if(!digitalRead(right)){
     //Serial.println("right");
