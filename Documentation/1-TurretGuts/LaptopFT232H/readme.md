@@ -19,7 +19,7 @@ git clone --recursive git@github.com:Maiikiru/TF2SentrySource.git "SentryGun"
 cd SentryGun
 bash "RequirementsFiles/install_linux.bash"
 ```
-This makes everything super easy. Installs 
+This makes everything super easy. Installs CV repo and sets everything up
 
 ### 3. Setup your Servos
 One this is done, go to 

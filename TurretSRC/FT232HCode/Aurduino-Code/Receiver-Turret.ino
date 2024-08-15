@@ -36,7 +36,7 @@ int servoState = 4;
 int fireState = 5;  
 
 //Create Array to hold radio data
-int myData [5] = { 0 };
+int myData [6] = { 0 };
 
 //Address of NRF24L01 Receiver.. Itself
 const byte address[6] = "00001";
@@ -102,7 +102,8 @@ void loop() {
     Serial.println(message);
   }
   //Moves message into an array
-  myData[4] = message;
+  myData[4] << message[0];
+  myData[5] << message[1];
   delay(5);
 
   //Close out of the radio

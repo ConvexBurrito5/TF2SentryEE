@@ -30,11 +30,11 @@ class WranglerControllerFT232H(WranglerController):
             self.WranglerStatus.clear()
 
     def read_radio(self) -> tuple[bool, WranglerController.Direction]:
+        result = bytearray(9)
 
         while not self.i2c_bus.try_lock():
             pass
         try:
-            result = bytearray(9)
             # Address of aurduino is 0x55, load data into it
             self.i2c_bus.readfrom_into(0x55, result)
             #NOTE, I2C bus doubles the data passed through.
@@ -53,14 +53,16 @@ class WranglerControllerFT232H(WranglerController):
             else:
                 tempData = False
 
-            if data[8] == "L":
+            if data[10] == "L":
                 return tempData, WranglerController.Direction.LEFT
-            elif data[8] == "R":
+            elif data[10] == "R":
                 return tempData, WranglerController.Direction.RIGHT
-            elif data[8] == "U":
+            elif data[10] == "U":
                 return tempData, WranglerController.Direction.UP
-            elif data[8] == "D":
+            elif data[10] == "D":
                 return tempData, WranglerController.Direction.DOWN
+            elif data[10] is None:
+                return tempData, WranglerController.Direction.NOP
         except:
             # Error catching. Happens when the aurduino cant be pinged from the I2C bus
             print("Aurduino not connected(Wrangler). I2C returning Bad Data")

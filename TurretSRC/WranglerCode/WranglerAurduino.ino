@@ -30,7 +30,6 @@ RF24 radio(7, 8); // CE, CSN
 //Address of NRF24L01 Receiver
 const byte address[6] = "00001";
 
-
 void setup() {
   // put your setup code here, to run once:
 
@@ -54,17 +53,17 @@ void setup() {
     radio.setPALevel(RF24_PA_MIN);
     //No need to take input
     radio.stopListening();
+    Data_Package data;
 }
 
 void loop() {     
   //Logic for the command to be sent over NRF24L01
-  char message = 'N';
-
+  String message = NULL;
   //Logic for message
   if(!digitalRead(fire)){
     message = 'F';          //Fire
   }else{
-    message = NULL;
+    message = 'N';
   }
   if(!digitalRead(right)){
     //Serial.println("right");
@@ -81,9 +80,9 @@ void loop() {
   }
 
   //Broadcast data
-  radio.write(&message, sizeof(message));
+  radio.write(&data, sizeof(Data_Package));
   //Print data to serial for easy testing
-  Serial.println(message);
+  Serial.println(data);
 
   //5ms delay to allow for hardware to process
   delay(5);
