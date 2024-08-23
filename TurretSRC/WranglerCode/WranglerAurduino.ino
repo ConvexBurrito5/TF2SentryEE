@@ -25,10 +25,22 @@ int fire = 2;
 //int ctrlSwitch = 9;
 
 //NRF24L01 Radio Pins
-RF24 radio(7, 8); // CE, CSN
+#define CE_PIN   9
+#define CSN_PIN 10
 
 //Address of NRF24L01 Receiver
 const byte address[6] = "00001";
+RF24 radio(CE_PIN, CSN_PIN);
+
+struct DataPackage {
+  byte firestate = 0;
+    //0 (N), 1(F)
+  byte movestate = 0;
+    //0 (N), 1(R), 2(L), 3(U), 4(D)
+  byte active = 1;
+};
+
+DataPackage wranglerData;
 
 void setup() {
   // put your setup code here, to run once:
@@ -53,37 +65,62 @@ void setup() {
     radio.setPALevel(RF24_PA_MIN);
     //No need to take input
     radio.stopListening();
-    Data_Package data;
 }
 
-void loop() {     
+void loop() {
   //Logic for the command to be sent over NRF24L01
-  String message = NULL;
   //Logic for message
   if(!digitalRead(fire)){
-    message = 'F';          //Fire
+    //F
+    wranglerData.firestate = 1;
   }else{
-    message = 'N';
+    wranglerData.firestate = 0;
   }
   if(!digitalRead(right)){
     //Serial.println("right");
-    message = message +'R';          //Right
+    wranglerData.movestate = 1;
   }else if(!digitalRead(left)){
     //Serial.println("left");
-    message = message +'L';          //Left
+    wranglerData.movestate = 2;
   }else if(!digitalRead(up)){
     //Serial.println("up");
-    message = message +'U';          //Up
+    wranglerData.movestate = 3;
   }else if(!digitalRead(down)){
     //Serial.println("down");
-    message = message +'D';          //Down
+    wranglerData.movestate = 4;
+  }else{
+    wranglerData.movestate = 0;
   }
 
-  //Broadcast data
-  radio.write(&data, sizeof(Data_Package));
-  //Print data to serial for easy testing
-  Serial.println(data);
+  /*
+    if(!digitalRead(fire)){
+    message = "F";          //Fire
+  }else{
+    message = "N";
+  }
+  if(!digitalRead(right)){
+    //Serial.println("right");
+    message = message +"R";          //Right
+  }else if(!digitalRead(left)){
+    //Serial.println("left");
+    message = message +"L";          //Left
+  }else if(!digitalRead(up)){
+    //Serial.println("up");
+    message = message +"U";          //Up
+  }else if(!digitalRead(down)){
+    //Serial.println("down");
+    message = message +"D";          //Down
+  }
+  */
 
+  //Broadcast data
+  radio.write(&wranglerData, sizeof(DataPackage));
+  //Print data to serial for easy testing
+  /*
+  Serial.println(wranglerData.firestate);
+  Serial.println(wranglerData.movestate);
+  Serial.println("_____________________");
+  */
   //5ms delay to allow for hardware to process
   delay(5);
 }

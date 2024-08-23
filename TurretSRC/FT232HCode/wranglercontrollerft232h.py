@@ -17,7 +17,7 @@ class WranglerControllerFT232H(WranglerController):
         self.i2c_bus = SingletonBoardFT232H().i2c_bus
 
         #Create the pin for the wrangler to monitor.
-        self.statusPin = digitalio.DigitalInOut(board.C1)
+        self.statusPin = digitalio.DigitalInOut(board.D7)
         self.statusPin.direction = digitalio.Direction.INPUT
 
     #Checks the pin and updates event for the brain
@@ -30,7 +30,7 @@ class WranglerControllerFT232H(WranglerController):
             self.WranglerStatus.clear()
 
     def read_radio(self) -> tuple[bool, WranglerController.Direction]:
-        result = bytearray(9)
+        result = bytearray(14)
 
         while not self.i2c_bus.try_lock():
             pass
@@ -44,24 +44,22 @@ class WranglerControllerFT232H(WranglerController):
             #data = result[8]
             data = [int(byte) for byte in result]
             # TBD RETURNCASEMODIFIED
-            print("WRANGLERDATA!!!")
             print(data)
-            if data[8] == 'N':
-                return False, WranglerController.Direction.NOP
-            if data[8] == 'F':
+            print(data[10])
+            if data[8] == 1:
                 tempData = True
             else:
                 tempData = False
 
-            if data[10] == "L":
+            if data[10] == 3:
                 return tempData, WranglerController.Direction.LEFT
-            elif data[10] == "R":
+            elif data[10] == 4:
                 return tempData, WranglerController.Direction.RIGHT
-            elif data[10] == "U":
+            elif data[10] == 1:
                 return tempData, WranglerController.Direction.UP
-            elif data[10] == "D":
+            elif data[10] == 2:
                 return tempData, WranglerController.Direction.DOWN
-            elif data[10] is None:
+            else:
                 return tempData, WranglerController.Direction.NOP
         except:
             # Error catching. Happens when the aurduino cant be pinged from the I2C bus

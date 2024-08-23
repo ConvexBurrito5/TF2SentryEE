@@ -17,6 +17,10 @@ wrangler = WranglerControllerFT232H()
 
 
 if __name__ == "__main__":
+    # WranglerRadioTest
+    x = wrangler.read_radio()
+    print("-----------------")
+    print(x)
     while True:
         '''
         print(motor.get_x_angle())
@@ -31,23 +35,48 @@ if __name__ == "__main__":
         time.sleep(1)
         '''
 
+        '''
         #WranglerRadioTest
         x = wrangler.read_radio()
+        print("-----------------")
         print(x)
+        '''
+
+        x = wrangler.read_radio()
         is_firing, direction = x
+        print(x)
         if is_firing:
             fire.fire()
         if direction == WranglerController.Direction.NOP:
             pass
         elif direction == WranglerController.Direction.UP:
-            motor.rotate_y_relative(3)
+            temp = motor.get_y_angle()
+            motor.set_y_angle(temp + 10)
+            print("Turning Up! 3 Degrees")
+            time.sleep(.5)
+            #motor.rotate_y_relative(3)
         elif direction == WranglerController.Direction.DOWN:
-            motor.rotate_y_relative(-3)
+            temp = motor.get_y_angle()
+            motor.set_y_angle(temp - 10)
+            print("Turning Down! 3 Degrees")
+            time.sleep(.5)
+
+            #motor.rotate_y_relative(-3)
         elif direction == WranglerController.Direction.LEFT:
-            motor.rotate_x_relative(-3)
+            temp = motor.get_x_angle()
+            motor.set_x_angle(temp + 10)
+            print("Turning Left! 3 Degrees")
+            time.sleep(.5)
+
+            #motor.rotate_x_relative(-3)
         elif WranglerController.Direction.RIGHT:
-            motor.rotate_x_relative(3)
-        time.sleep(.5)
+            temp = motor.get_x_angle()
+            motor.set_x_angle(temp - 10)
+            print("Turning Right! 3 Degrees")
+            time.sleep(.5)
+        x = 0
+            #motor.rotate_x_relative(3)
+        print("--------------")
 
 
     '''

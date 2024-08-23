@@ -33,24 +33,29 @@ class MotorControllerFT232H(MotorController):
             # DEFINE the servos HERE. In this case there is only one PCA9685 board here.
             # 500 & 2500 are the magic numbers for the Servos. Ripped off amazon page
             print("test2")
-            self.xAxis = servo.Servo(pwm_out=self.PCA.channels[0], min_pulse=500, max_pulse=2500, actuation_range=self.MAX_X_ANGLE)
+            self.xAxis = servo.Servo(pwm_out=self.PCA.channels[0], min_pulse=500, max_pulse=2500,
+                                     actuation_range=self.MAX_X_ANGLE)
             print("test3")
-            self.yAxis = servo.Servo(pwm_out=self.PCA.channels[1], min_pulse=500, max_pulse=2500, actuation_range=self.MAX_Y_ANGLE)
+            self.yAxis = servo.Servo(pwm_out=self.PCA.channels[1], min_pulse=500, max_pulse=2500,
+                                     actuation_range=self.MAX_Y_ANGLE)
             print("Initialization of FT232H MotorController")
 
         except:
             print("PCA Not Connected")
             self.i2c_bus.unlock()
+
     """
     Returns: the angle that the XY servo is currently in.
     """
+
     def get_x_angle(self) -> int:
         self._update_position()
-        return round(self._raw_x_pos,12)
+        return round(self._raw_x_pos, 12)
 
     """
     Returns: the angle that the YZ servo is currently in.
     """
+
     def get_y_angle(self) -> float:
         self._update_position()
         return round(self._raw_y_pos, 12)
@@ -65,6 +70,7 @@ class MotorControllerFT232H(MotorController):
     Returns True if 0<=angle<=MAX_X_ANGLE
         False if this condition is not met.
     """
+
     def set_x_angle(self, angle: float) -> bool:
         # Sets the current angle. MAX is MAX_X_ANGLE DEG
         if angle < 0:
@@ -72,7 +78,7 @@ class MotorControllerFT232H(MotorController):
             return False
         elif angle > self.MAX_X_ANGLE:
             self.xAxis.angle = self.MAX_X_ANGLE
-            return False 
+            return False
         else:
             self.xAxis.angle = angle
             return True
@@ -87,6 +93,7 @@ class MotorControllerFT232H(MotorController):
     Returns True if 0<=angle<=MAX_Y_ANGLE
         False if this condition is not met.
     """
+
     def set_y_angle(self, angle: float) -> bool:
         # Sets the current angle. Max is MAX_Y_ANGLE DEG
         if angle < 0:
@@ -94,7 +101,7 @@ class MotorControllerFT232H(MotorController):
             return False
         elif angle > self.MAX_Y_ANGLE:
             self.yAxis.angle = self.MAX_Y_ANGLE
-            return False 
+            return False
         else:
             self.yAxis.angle = angle
             return True
@@ -117,8 +124,9 @@ class MotorControllerFT232H(MotorController):
         Beware of floating point errors as you could get something that
         should be true, but isnt true.
     """
+
     def rotate_x_relative(self, angle: float) -> bool:
-        xCurrent:float = self.get_x_angle()
+        xCurrent: float = self.get_x_angle()
         xNew = angle + xCurrent
         if xNew < 0:
             self.xAxis.angle = 0
@@ -148,8 +156,9 @@ class MotorControllerFT232H(MotorController):
         Beware of floating point errors as you could get something that
         should be true, but isnt true.
     """
+
     def rotate_y_relative(self, angle: float) -> bool:
-        yCurrent:float = self.get_y_angle()
+        yCurrent: float = self.get_y_angle()
         yNew = angle + yCurrent
         if yNew < 0:
             self.yAxis.angle = 0
@@ -194,20 +203,19 @@ class MotorControllerFT232H(MotorController):
             for _ in range(100):
                 if stopCon.isSet():
                     stopCon.clear()
-                    return 
+                    return
                 self.rotate_x_relative(-2.70)
                 time.sleep(.025)
-            
 
-    def _update_position(self, failCounter=1,limit=10) -> None:
+    def _update_position(self, failCounter=1, limit=10) -> None:
         if failCounter >= limit:
-            raise RuntimeError("Got bad data "+limit+" times in a row. Please check the code.")
+            raise RuntimeError("Got bad data " + limit + " times in a row. Please check the code.")
         # Updates X and Y position from Using I2C comm with the aurduino that is monitoring the potentiometers
         # Check if I2C is open, if so take ctrl
         while not self.i2c_bus.try_lock():
             pass
         try:
-            result = bytearray(8)
+            result = bytearray(14)
             # Address of aurduino is 0x55, load data into it
             self.i2c_bus.readfrom_into(0x55, result)
             # Convert bits into ints and load into array

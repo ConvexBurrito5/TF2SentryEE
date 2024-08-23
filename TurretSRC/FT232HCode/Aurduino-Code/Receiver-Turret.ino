@@ -8,8 +8,8 @@
 //Transmittal Code and implementation of NRF24L01
 //based from 
 /*
-Dejan Nedelkovski, www.HowToMechatronics.com
-Library: TMRh20/RF24, https://github.com/tmrh20/RF24/
+https://forum.arduino.cc/t/simple-nrf24l01-2-4ghz-transceiver-demo/405123
+Robin2's
 */
 
 //Libs for the NRF24L01
@@ -25,7 +25,8 @@ float singleDegreeY = 3.1722222;
 
 
 //NRF24L01 Radio Pins
-RF24 radio(7, 8); // CE, CSN
+#define CE_PIN   9
+#define CSN_PIN 10
 //Servo Poteometer Analog feedback pins
 int pos1 = A0;
 int pos2 = A1;
@@ -33,22 +34,36 @@ int pos2 = A1;
 int hardwareSwitch = 6;
 //RelayControl
 int servoState = 4;
-int fireState = 5;  
-
+int fireState = 5;
+//wranglerstatus
+int wranglerStatus = 2;
 //Create Array to hold radio data
-int myData [6] = { 0 };
+int myData [7] = { 0};
 
 //Address of NRF24L01 Receiver.. Itself
 const byte address[6] = "00001";
+RF24 radio(CE_PIN, CSN_PIN);
+
+struct DataPackage {
+  byte firestate = 5;
+    //0 (N), 1(F)
+  byte movestate = 5;
+    //0 (N), 1(R), 2(L), 3(U), 4(D)
+  byte active = 1;
+};
+
+DataPackage wranglerData;
 
 void setup() {
 
   //Start Serial
   Serial.begin(9600);
   //Init pins
+  //pinMode(10, OUTPUT);
   pinMode(hardwareSwitch, INPUT_PULLUP);
   pinMode(servoState, OUTPUT);
   pinMode(fireState, OUTPUT);
+  pinMode(wranglerStatus, OUTPUT);
   //Start NRF24L01
   radio.begin();
   //Begin listening for messages sent to the address
@@ -63,6 +78,7 @@ void setup() {
   Wire.begin(0x55);
   //If I2C request is made, call requestEvent method
   Wire.onRequest(requestEvent);
+
 }
 
 void loop() {
@@ -72,7 +88,7 @@ void loop() {
     digitalWrite(fireState, LOW);
   }else{
     digitalWrite(servoState, HIGH);
-    //PIN fireState is switch 
+    //PIN fireState is switch
     digitalWrite(fireState, HIGH);
   }
   //Testing
@@ -91,23 +107,42 @@ void loop() {
   }else{
     myData[0] = xPos;
   }
-  myData[2] = yPos;
-
+  if (yPos >255){
+    myData[3] = yPos-255;
+    myData[2] = 255;
+  }else{
+    myData[2] = yPos;
+  }
   //Configuring the NRF24L01
-  radio.startListening();
-  char message = 'N';
+  //radio.startListening();
+
   if (radio.available()) {
     //Intake message, sets message = to received data
-    radio.read(&message, sizeof(message));
-    Serial.println(message);
+    radio.read(&wranglerData, sizeof(DataPackage));
+    /*
+    Serial.println(wranglerData.firestate);
+    Serial.println(wranglerData.movestate);
+    Serial.println("__________________");
+    */
+    //Moves message into an array
+    myData[4] = wranglerData.firestate;
+    myData[5] = wranglerData.movestate;
+    myData[6] = 1;
+    digitalWrite(wranglerStatus, HIGH);
+    //Serial.println(myData[4]);
+    //Serial.println(myData[5]);
+    delay(15);
+  }else{
+   myData[4] = 0;
+   myData[5] = 0;
+   myData[6] = 0;
+   digitalWrite(wranglerStatus, LOW);
   }
-  //Moves message into an array
-  myData[4] << message[0];
-  myData[5] << message[1];
-  delay(5);
-
+  Serial.println(myData[4]);
+  Serial.println(myData[5]);
+  Serial.println("------");
   //Close out of the radio
-  radio.stopListening();
+  //radio.stopListening();
 }
 
 void requestEvent(){
