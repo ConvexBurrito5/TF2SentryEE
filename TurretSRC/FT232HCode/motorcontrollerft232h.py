@@ -11,11 +11,17 @@ from singletonboardft232h import SingletonBoardFT232H
 class MotorControllerFT232H(MotorController):
 
     def __init__(self):
-        self._raw_x_pos = None
-        self._raw_y_pos = None
         self.MAX_X_ANGLE = 270
         self.MAX_Y_ANGLE = 180
         self.total_fails = 0
+
+        #Aurduino I2C register data
+        self.x_position = 0
+        self.y_position = 0
+        self.fire_state = 0
+        self.move_state = 0
+        self.wrangler_status = 0
+
 
         #print(SCL)
         #print(SDA)
@@ -24,24 +30,20 @@ class MotorControllerFT232H(MotorController):
 
         try:
             # Create the PCA9685 slave on the I2C bus
-            print("test1")
             self.PCA = PCA9685(self.i2c_bus)
-            print("test1.5")
             # Setup the SCL Freq
             self.PCA.frequency = 50
             self.PCA.channels[0].duty_cycle = 0x7FFF
             # DEFINE the servos HERE. In this case there is only one PCA9685 board here.
             # 500 & 2500 are the magic numbers for the Servos. Ripped off amazon page
-            print("test2")
             self.xAxis = servo.Servo(pwm_out=self.PCA.channels[0], min_pulse=500, max_pulse=2500,
                                      actuation_range=self.MAX_X_ANGLE)
-            print("test3")
             self.yAxis = servo.Servo(pwm_out=self.PCA.channels[1], min_pulse=500, max_pulse=2500,
                                      actuation_range=self.MAX_Y_ANGLE)
-            print("Initialization of FT232H MotorController")
+            print("Initialized: MotorController")
 
         except:
-            print("PCA Not Connected")
+            print("MotorController: Failure to Init, PCA9685 chip not connected")
             self.i2c_bus.unlock()
 
     """
@@ -49,16 +51,18 @@ class MotorControllerFT232H(MotorController):
     """
 
     def get_x_angle(self) -> int:
-        self._update_position()
-        return round(self._raw_x_pos, 12)
+        self.update_position()
+        return round(self.x_position, 12)
 
     """
     Returns: the angle that the YZ servo is currently in.
     """
 
     def get_y_angle(self) -> float:
-        self._update_position()
-        return round(self._raw_y_pos, 12)
+        self.update_position()
+        print("MotorCtrl: Current Position is ")
+        print(self.y_position)
+        return round(self.y_position, 12)
 
     """
     Pass 0-MAX_X_ANGLE in, Sends CMD for XY(X) servo motor to turn.
@@ -104,6 +108,8 @@ class MotorControllerFT232H(MotorController):
             return False
         else:
             self.yAxis.angle = angle
+            #self.yAxis.angle = 180
+            #self.yAxis.angle += 3
             return True
 
     """
@@ -187,6 +193,16 @@ class MotorControllerFT232H(MotorController):
         self.set_x_angle(self.get_x_angle())
         self.set_y_angle(self.get_y_angle())
 
+    def pause_x(self):
+        x = self.get_x_angle()
+        self.set_x_angle(x)
+
+    def pause_y(self):
+        x = self.get_y_angle()
+        print("Current Y position b4 set:")
+        print(self.y_position)
+        self.set_y_angle(x)
+
     def idle(self, stopCon: Event) -> None:
         # There is no way to make PWM signals convey speed.
         # To get an IDLE state for the turret we just move a few degrees
@@ -207,35 +223,55 @@ class MotorControllerFT232H(MotorController):
                 self.rotate_x_relative(-2.70)
                 time.sleep(.025)
 
-    def _update_position(self, failCounter=1, limit=10) -> None:
+    def update_position(self, failCounter=1, limit=10) -> None:
         if failCounter >= limit:
-            raise RuntimeError("Got bad data " + limit + " times in a row. Please check the code.")
+            raise RuntimeError("Got bad data " + limit + " times in a row. Please check the hardware.")
         # Updates X and Y position from Using I2C comm with the aurduino that is monitoring the potentiometers
         # Check if I2C is open, if so take ctrl
         while not self.i2c_bus.try_lock():
+            print("Motor Controller: I2C Bus is locked, Unable to update position")
             pass
         try:
+            #print("Motor Controller Taken control of I2C")
             result = bytearray(14)
             # Address of aurduino is 0x55, load data into it
             self.i2c_bus.readfrom_into(0x55, result)
             # Convert bits into ints and load into array
             integers = [int(byte) for byte in result]
-            # error checking of data, integers[7] is designed to be empty.
-            # sometimes pulling info off aurduino takes too long and bad data pulled
-            if integers[7] != 0 or integers[0] + integers[2] > self.MAX_X_ANGLE:
+            print(integers)
+            if integers[0] + integers[2] == (self.MAX_X_ANGLE + 1):
+                if integers[2] == 0:
+                    integers[0] -= 1
+                else:
+                    integers[2] -= 1
+            if integers[4] + integers[6] == (self.MAX_Y_ANGLE + 1):
+                if integers[6] == 0:
+                    integers[4] -= 1
+                else:
+                    integers[6] -= 1
+            # error checking of data, integers[7] is designed to be empty. IF bad data its typical 255
+            if integers[7] != 0:
                 # if bad data. print
                 print('InvalidData: #{}'.format(failCounter))
-                time.sleep(.2)
+                print(integers)
+                # time.sleep(.2)
                 # give bus back and recursive call until good data pulled
                 self.i2c_bus.unlock()
                 self.total_fails += 1
-                self._update_position(failCounter=failCounter + 1)
+                self.update_position(failCounter=failCounter + 1)
             else:
                 # update position status
                 # Reset the fail counter
                 failCounter = 0
-                self._raw_x_pos = integers[0] + integers[2]
-                self._raw_y_pos = integers[4]
+                #self._raw_x_pos = integers[0] + integers[2]
+                #self._raw_y_pos = integers[4]
+                self.x_position = integers[0]+integers[2]
+                self.y_position = integers[4]+integers[6]
+                #print("Current Y position:")
+                #print(self.y_position)
+                self.fire_state = integers[8]
+                self.move_state = integers[10]
+                self.wrangler_status = integers[12]
         except:
             # Error catching. Happens when the aurduino cant be pinged from the I2C bus
             print("Aurduino not connected(MotorController). I2C returning Bad Data")
@@ -243,3 +279,4 @@ class MotorControllerFT232H(MotorController):
         finally:
             # Finish by giving up the bus
             self.i2c_bus.unlock()
+

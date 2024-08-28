@@ -11,6 +11,7 @@ class PeripheralControllerFT232H(PeripheralController):
         self._LED.direction = digitalio.Direction.OUTPUT
         # For the switches I bought, True = Closed, False = Open
         self._LED.value = True
+        print("Initialized: Peripheral Controller")
 
     def led_state(self, state: bool) -> None:
         # Updates LED state

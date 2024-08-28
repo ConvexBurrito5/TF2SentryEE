@@ -10,9 +10,10 @@ class SingletonBoardFT232H(object):
     def __new__(cls):
         #if not hasattr(cls, '_instance'):
         if cls._instance is None:
-            print("Creating I2C Bus")
+            print("Initialized: I2C Bus")
             cls._instance = super(SingletonBoardFT232H, cls).__new__(cls)
             cls._instance.i2c_bus = busio.I2C(SCL, SDA)
         else:
-            print("Using existing Bus")
+            #print("I2C Bus: Using existing Bus for creation")
+            pass
         return cls._instance
