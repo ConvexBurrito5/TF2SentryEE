@@ -20,7 +20,7 @@ def check_joystick_state(turnstate: Event, threadjoystickstate: Event):
     joystickCount = 0
     while 1:
         threadjoystickstate.wait()
-        #print("main: Starting the joystick check")
+        print("main: Starting the joystick check")
         complete = False
         while not complete:
             wranglerData = wrangler.read_radio()
@@ -46,43 +46,31 @@ if __name__ == "__main__":
     #x = wrangler.read_radio()
     #print("-----------------")
     #print(x)
-    motor.set_x_angle(0)
-    motor.set_y_angle(0)
-    while True:
 
+    motor.set_x_angle(100)
+    motor.set_y_angle(100)
+
+
+    while True:
+        
+        while threadjoystickstate.isSet():
+            print("STOPPPPPP")
+            pass
         x = wrangler.read_radio()
         is_firing, direction = x
-
-        print(x)
+        #print(x)
         if is_firing:
             fire.fire()
         if direction == WranglerController.Direction.NOP:
             pass
         elif direction == WranglerController.Direction.UP:
-            #temp = motor.get_y_angle()
-            #motor.set_y_angle(temp + 10)
-
             wrangler.increase_y_angle(turnstate,threadjoystickstate)
-
-            #print(motor.get_y_angle())
-            print("Turning Up!")
-            #motor.rotate_y_relative(3)
 
         elif direction == WranglerController.Direction.DOWN:
             wrangler.decrease_y_angle(turnstate,threadjoystickstate)
-            print("Turning Down!")
 
-        '''
-        
         elif direction == WranglerController.Direction.LEFT:
-            temp = motor.get_x_angle()
-            motor.set_x_angle(temp + 10)
-            print("Turning Left! 3 Degrees")
+            wrangler.increase_x_angle(turnstate,threadjoystickstate)
 
-            #motor.rotate_x_relative(-3)
         elif WranglerController.Direction.RIGHT:
-            temp = motor.get_x_angle()
-            motor.set_x_angle(temp - 10)
-            print("Turning Right! 3 Degrees")
-        
-        '''
+            wrangler.decrease_x_angle(turnstate,threadjoystickstate)

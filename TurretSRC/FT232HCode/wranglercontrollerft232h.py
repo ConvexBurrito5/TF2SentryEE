@@ -32,20 +32,41 @@ class WranglerControllerFT232H(WranglerController):
 
     def increase_y_angle(self, turnstate: Event, threadjoystickstate: Event) -> bool:
         # Sets the current angle. Max is MAX_Y_ANGLE DEG
-
+        self.Motorcontroller.set_y_max()
         threadjoystickstate.set()
         turnstate.wait()
+        #print("Pausing the Microcontroller")
         self.Motorcontroller.pause_y()
         turnstate.clear()
         return True
 
     def decrease_y_angle(self, turnstate: Event, threadjoystickstate: Event) -> bool:
+        self.Motorcontroller.set_y_min()
         threadjoystickstate.set()
         turnstate.wait()
+        # print("Pausing the Microcontroller")
         self.Motorcontroller.pause_y()
         turnstate.clear()
         return True
 
+    def increase_x_angle(self, turnstate: Event, threadjoystickstate: Event) -> bool:
+        # Sets the current angle. Max is MAX_Y_ANGLE DEG
+        self.Motorcontroller.set_x_max()
+        threadjoystickstate.set()
+        turnstate.wait()
+        #print("Pausing the Microcontroller")
+        self.Motorcontroller.pause_x()
+        turnstate.clear()
+        return True
+
+    def decrease_x_angle(self, turnstate: Event, threadjoystickstate: Event) -> bool:
+        self.Motorcontroller.set_x_min()
+        threadjoystickstate.set()
+        turnstate.wait()
+        # print("Pausing the Microcontroller")
+        self.Motorcontroller.pause_x()
+        turnstate.clear()
+        return True
     def read_radio(self) -> tuple[bool, WranglerController.Direction]:
         self.Motorcontroller.update_position()
 

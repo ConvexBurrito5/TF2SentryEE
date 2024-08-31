@@ -60,8 +60,8 @@ class MotorControllerFT232H(MotorController):
 
     def get_y_angle(self) -> float:
         self.update_position()
-        print("MotorCtrl: Current Position is ")
-        print(self.y_position)
+        #print("MotorCtrl: Current Position is ")
+        #print(self.y_position)
         return round(self.y_position, 12)
 
     """
@@ -199,8 +199,6 @@ class MotorControllerFT232H(MotorController):
 
     def pause_y(self):
         x = self.get_y_angle()
-        print("Current Y position b4 set:")
-        print(self.y_position)
         self.set_y_angle(x)
 
     def idle(self, stopCon: Event) -> None:
