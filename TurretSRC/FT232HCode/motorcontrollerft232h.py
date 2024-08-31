@@ -1,11 +1,9 @@
 import time
-import busio
-from board import SDA, SCL
 from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
 from threading import Event
 from IO.motorcontroller import MotorController
-from singletonboardft232h import SingletonBoardFT232H
+from .singletonboardft232h import SingletonBoardFT232H
 
 
 class MotorControllerFT232H(MotorController):
@@ -133,7 +131,9 @@ class MotorControllerFT232H(MotorController):
 
     def rotate_x_relative(self, angle: float) -> bool:
         xCurrent: float = self.get_x_angle()
+        print (xCurrent)
         xNew = angle + xCurrent
+        print (xNew)
         if xNew < 0:
             self.xAxis.angle = 0
             return False
@@ -207,19 +207,21 @@ class MotorControllerFT232H(MotorController):
         # at a time and wait a few ms between.
         # Runs till event is set.
         while True:
-            for _ in range(100):
+            print ("IN IDLE")
+            for _ in range(50):
+                print("rotate x")
                 if stopCon.isSet():
                     stopCon.clear()
                     return
-                self.rotate_x_relative(2.70)
-                time.sleep(.025)
+                self.rotate_x_relative(5.4)
+                time.sleep(.3)
 
-            for _ in range(100):
+            for _ in range(50):
                 if stopCon.isSet():
                     stopCon.clear()
                     return
-                self.rotate_x_relative(-2.70)
-                time.sleep(.025)
+                self.rotate_x_relative(-5.4)
+                time.sleep(.3)
 
     def update_position(self, failCounter=1, limit=10) -> None:
         if failCounter >= limit:
@@ -236,7 +238,7 @@ class MotorControllerFT232H(MotorController):
             self.i2c_bus.readfrom_into(0x55, result)
             # Convert bits into ints and load into array
             integers = [int(byte) for byte in result]
-            print(integers)
+            #print(integers)
             if integers[0] + integers[2] == (self.MAX_X_ANGLE + 1):
                 if integers[2] == 0:
                     integers[0] -= 1

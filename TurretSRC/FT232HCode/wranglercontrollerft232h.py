@@ -6,7 +6,6 @@ import board
 import digitalio
 from threading import Event
 from IO.wranglercontroller import WranglerController
-from singletonboardft232h import SingletonBoardFT232H
 from motorcontrollerft232h import MotorControllerFT232H
 
 

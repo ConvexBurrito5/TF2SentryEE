@@ -47,15 +47,19 @@ if __name__ == "__main__":
     #print("-----------------")
     #print(x)
 
-    motor.set_x_angle(100)
-    motor.set_y_angle(100)
+    motor.set_x_angle(0)
+    motor.set_y_angle(0)
+    time.sleep(2)
+    motor.idle(threadjoystickstate)
 
-
+    #motor.rotate_x_relative(10)
+    '''
     while True:
         
         while threadjoystickstate.isSet():
             print("STOPPPPPP")
             pass
+        print(motor.wrangler_status)
         x = wrangler.read_radio()
         is_firing, direction = x
         #print(x)
@@ -74,3 +78,5 @@ if __name__ == "__main__":
 
         elif WranglerController.Direction.RIGHT:
             wrangler.decrease_x_angle(turnstate,threadjoystickstate)
+            
+    '''
