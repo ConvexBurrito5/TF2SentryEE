@@ -11,9 +11,9 @@ from .motorcontrollerft232h import MotorControllerFT232H
 
 class WranglerControllerFT232H(WranglerController):
 
-    def __init__(self, MotorController: MotorControllerFT232H):
+    def __init__(self, MotorController: MotorControllerFT232H, wrangler_event: Event):
         # Create wrangler status event
-        self.WranglerStatus = Event()
+        self.WranglerStatus = wrangler_event
         self.Motorcontroller = MotorController
         #Create the pin for the wrangler to monitor.
         self.statusPin = digitalio.DigitalInOut(board.D7)
@@ -66,6 +66,7 @@ class WranglerControllerFT232H(WranglerController):
         self.Motorcontroller.pause_x()
         turnstate.clear()
         return True
+
     def read_radio(self) -> tuple[bool, WranglerController.Direction]:
         self.Motorcontroller.update_position()
 
