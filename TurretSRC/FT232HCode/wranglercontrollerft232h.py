@@ -6,7 +6,7 @@ import board
 import digitalio
 from threading import Event
 from IO.wranglercontroller import WranglerController
-from motorcontrollerft232h import MotorControllerFT232H
+from .motorcontrollerft232h import MotorControllerFT232H
 
 
 class WranglerControllerFT232H(WranglerController):

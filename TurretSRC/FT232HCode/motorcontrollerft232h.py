@@ -3,7 +3,7 @@ from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
 from threading import Event
 from IO.motorcontroller import MotorController
-from singletonboardft232h import SingletonBoardFT232H
+from .singletonboardft232h import SingletonBoardFT232H
 
 
 class MotorControllerFT232H(MotorController):
