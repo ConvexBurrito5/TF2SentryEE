@@ -85,3 +85,6 @@ class WranglerControllerFT232H(WranglerController):
             return tempData, WranglerController.Direction.DOWN
         else:
             return tempData, WranglerController.Direction.NOP
+
+    def is_set(self) -> bool:
+        return self.WranglerStatus.is_set()
