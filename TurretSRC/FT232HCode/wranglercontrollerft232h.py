@@ -58,7 +58,7 @@ class WranglerControllerFT232H(WranglerController):
         self.turnstate.clear()
 
     def read_radio(self) -> tuple[bool, WranglerController.Direction]:
-        self.Motorcontroller.update_position()
+        self.Motorcontroller._update_position()
 
         if self.Motorcontroller.fire_state == 1:
             tempData = True
@@ -89,3 +89,4 @@ class WranglerControllerFT232H(WranglerController):
                     complete = True
             else:
                 joystickCount = 0
+

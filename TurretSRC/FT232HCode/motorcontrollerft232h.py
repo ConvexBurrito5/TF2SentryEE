@@ -1,5 +1,7 @@
 # Created by Steven Naliwajka, https://github.com/ConvexBurrito5/TF2SentryEE
 import time
+import digitalio
+import board
 from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo
 from threading import Event
@@ -10,24 +12,34 @@ from .singletonboardft232h import SingletonBoardFT232H
 class MotorControllerFT232H(MotorController):
 
     def __init__(self):
+        # IF YOU HAVE DIFFERENT MOTORS THAN MINE, UPDATE THESE VALUES BEFORE RUNNING
+        # ------------------------
         self.MAX_X_ANGLE = 270
         self.MAX_Y_ANGLE = 180
+        self.MIN_X_ANGLE = 0
+        self.MIN_Y_ANGLE = 0
+        self.X_MIN_PULSE = 500
+        self.X_MAX_PULSE = 2500
+        self.Y_MIN_PULSE = 500
+        self.Y_MAX_PULSE = 2500
+        # ------------------------
         self.total_fails = 0
 
-        #Aurduino I2C register data
+        # I2C register data
         self.x_position = 0
         self.y_position = 0
         self.fire_state = 0
         self.move_state = 0
         self.wrangler_status = 0
 
-
-        #print(SCL)
-        #print(SDA)
+        # print(SCL)
+        # print(SDA)
         # create i2c Bus
         self.i2c_bus = SingletonBoardFT232H().i2c_bus
 
         try:
+            self._SETUP_PIN = digitalio.DigitalInOut(board.C2)
+            self._SETUP_PIN.direction = digitalio.Direction.OUTPUT
             # Create the PCA9685 slave on the I2C bus
             self.PCA = PCA9685(self.i2c_bus)
             # Setup the SCL Freq
@@ -35,22 +47,30 @@ class MotorControllerFT232H(MotorController):
             self.PCA.channels[0].duty_cycle = 0x7FFF
             # DEFINE the servos HERE. In this case there is only one PCA9685 board here.
             # 500 & 2500 are the magic numbers for the Servos. Ripped off amazon page
-            self.xAxis = servo.Servo(pwm_out=self.PCA.channels[0], min_pulse=500, max_pulse=2500,
-                                     actuation_range=self.MAX_X_ANGLE)
-            self.yAxis = servo.Servo(pwm_out=self.PCA.channels[1], min_pulse=500, max_pulse=2500,
-                                     actuation_range=self.MAX_Y_ANGLE)
+            self.xAxis = servo.Servo(pwm_out=self.PCA.channels[0], min_pulse=self.X_MIN_PULSE,
+                                     max_pulse=self.X_MAX_PULSE, actuation_range=self.MAX_X_ANGLE)
+            self.yAxis = servo.Servo(pwm_out=self.PCA.channels[1], min_pulse=self.Y_MIN_PULSE,
+                                     max_pulse=self.Y_MAX_PULSE, actuation_range=self.MAX_Y_ANGLE)
             print("Initialized: MotorController")
 
         except:
-            print("MotorController: Failure to Init, PCA9685 chip not connected")
+            print("MotorController: Failure to Init, PCA9685 chip not connected!")
             self.i2c_bus.unlock()
+
+        try:
+            print("MotorController: Beginning motor calibration.")
+            self._calibrate_serovo_poteometers()
+        except:
+            print("MotorController: Motor calibration failed.")
+        else:
+            print("MotorController: Motor calibration successful.")
 
     """
     Returns: the angle that the XY servo is currently in.
     """
 
     def get_x_angle(self) -> int:
-        self.update_position()
+        self._update_position()
         return round(self.x_position, 12)
 
     """
@@ -58,9 +78,9 @@ class MotorControllerFT232H(MotorController):
     """
 
     def get_y_angle(self) -> float:
-        self.update_position()
-        #print("MotorCtrl: Current Position is ")
-        #print(self.y_position)
+        self._update_position()
+        # print("MotorCtrl: Current Position is ")
+        # print(self.y_position)
         return round(self.y_position, 12)
 
     """
@@ -76,8 +96,8 @@ class MotorControllerFT232H(MotorController):
 
     def set_x_angle(self, angle: float) -> bool:
         # Sets the current angle. MAX is MAX_X_ANGLE DEG
-        if angle < 0:
-            self.xAxis.angle = 0
+        if angle < self.MIN_X_ANGLE:
+            self.xAxis.angle = self.MIN_X_ANGLE
             return False
         elif angle > self.MAX_X_ANGLE:
             self.xAxis.angle = self.MAX_X_ANGLE
@@ -99,16 +119,16 @@ class MotorControllerFT232H(MotorController):
 
     def set_y_angle(self, angle: float) -> bool:
         # Sets the current angle. Max is MAX_Y_ANGLE DEG
-        if angle < 0:
-            self.yAxis.angle = 0
+        if angle < self.MIN_Y_ANGLE:
+            self.yAxis.angle = self.MIN_Y_ANGLE
             return False
         elif angle > self.MAX_Y_ANGLE:
             self.yAxis.angle = self.MAX_Y_ANGLE
             return False
         else:
             self.yAxis.angle = angle
-            #self.yAxis.angle = 180
-            #self.yAxis.angle += 3
+            # self.yAxis.angle = 180
+            # self.yAxis.angle += 3
             return True
 
     """
@@ -132,11 +152,11 @@ class MotorControllerFT232H(MotorController):
 
     def rotate_x_relative(self, angle: float) -> bool:
         xCurrent: float = self.get_x_angle()
-        print (xCurrent)
+        print(xCurrent)
         xNew = angle + xCurrent
-        print (xNew)
-        if xNew < 0:
-            self.xAxis.angle = 0
+        print(xNew)
+        if xNew < self.MIN_X_ANGLE:
+            self.xAxis.angle = self.MIN_X_ANGLE
             return False
         elif xNew > self.MAX_X_ANGLE:
             self.xAxis.angle = self.MAX_X_ANGLE
@@ -167,8 +187,8 @@ class MotorControllerFT232H(MotorController):
     def rotate_y_relative(self, angle: float) -> bool:
         yCurrent: float = self.get_y_angle()
         yNew = angle + yCurrent
-        if yNew < 0:
-            self.yAxis.angle = 0
+        if yNew < self.MIN_Y_ANGLE:
+            self.yAxis.angle = self.MIN_Y_ANGLE
             return False
         elif yNew > self.MAX_Y_ANGLE:
             self.yAxis.angle = self.MAX_Y_ANGLE
@@ -179,10 +199,10 @@ class MotorControllerFT232H(MotorController):
 
     # set#Angle wrappers.
     def set_x_min(self) -> None:
-        self.set_x_angle(0)
+        self.set_x_angle(self.MIN_X_ANGLE)
 
     def set_y_min(self) -> None:
-        self.set_y_angle(0)
+        self.set_y_angle(self.MIN_Y_ANGLE)
 
     def set_x_max(self) -> None:
         self.set_x_angle(self.MAX_X_ANGLE)
@@ -207,10 +227,12 @@ class MotorControllerFT232H(MotorController):
         # To get an IDLE state for the turret we just move a few degrees
         # at a time and wait a few ms between.
         # Runs till event is set.
+
+        # IDLE NEEDS TO BE UPDATED TO BE GENERAL
         while True:
-            print ("IN IDLE")
+            # print ("IN IDLE")
             for _ in range(50):
-                print("rotate x")
+                # print("rotate x")
                 if stopCon.isSet():
                     stopCon.clear()
                     return
@@ -224,22 +246,23 @@ class MotorControllerFT232H(MotorController):
                 self.rotate_x_relative(-5.4)
                 time.sleep(.3)
 
-    def update_position(self, failCounter=1, limit=10) -> None:
+    def _update_position(self, failCounter=1, limit=10) -> None:
         if failCounter >= limit:
-            raise RuntimeError("Got bad data " + limit + " times in a row. Please check the hardware.")
+            raise RuntimeError("MotorController: Got bad data " + limit + " times in a row. "
+                                                                          "Please check the hardware.")
         # Updates X and Y position from Using I2C comm with the aurduino that is monitoring the potentiometers
         # Check if I2C is open, if so take ctrl
         while not self.i2c_bus.try_lock():
             print("Motor Controller: I2C Bus is locked, Unable to update position")
             pass
         try:
-            #print("Motor Controller Taken control of I2C")
+            # print("Motor Controller Taken control of I2C")
             result = bytearray(14)
             # Address of aurduino is 0x55, load data into it
             self.i2c_bus.readfrom_into(0x55, result)
             # Convert bits into ints and load into array
             integers = [int(byte) for byte in result]
-            #print(integers)
+            # print(integers)
             if integers[0] + integers[2] == (self.MAX_X_ANGLE + 1):
                 if integers[2] == 0:
                     integers[0] -= 1
@@ -253,31 +276,45 @@ class MotorControllerFT232H(MotorController):
             # error checking of data, integers[7] is designed to be empty. IF bad data its typical 255
             if integers[7] != 0:
                 # if bad data. print
-                print('InvalidData: #{}'.format(failCounter))
+                print('MotorController: InvalidData: #{}'.format(failCounter))
                 print(integers)
                 # time.sleep(.2)
                 # give bus back and recursive call until good data pulled
                 self.i2c_bus.unlock()
                 self.total_fails += 1
-                self.update_position(failCounter=failCounter + 1)
+                self._update_position(failCounter=failCounter + 1)
             else:
                 # update position status
                 # Reset the fail counter
                 failCounter = 0
-                #self._raw_x_pos = integers[0] + integers[2]
-                #self._raw_y_pos = integers[4]
-                self.x_position = integers[0]+integers[2]
-                self.y_position = integers[4]+integers[6]
-                #print("Current Y position:")
-                #print(self.y_position)
+                # self._raw_x_pos = integers[0] + integers[2]
+                # self._raw_y_pos = integers[4]
+                self.x_position = integers[0] + integers[2]
+                self.y_position = integers[4] + integers[6]
+                # print("Current Y position:")
+                # print(self.y_position)
                 self.fire_state = integers[8]
                 self.move_state = integers[10]
                 self.wrangler_status = integers[12]
         except:
             # Error catching. Happens when the aurduino cant be pinged from the I2C bus
-            print("Aurduino not connected(MotorController). I2C returning Bad Data")
+            print("MotorController: Aurduino not connected. I2C returning Bad Data")
             self.i2c_bus.unlock()
         finally:
             # Finish by giving up the bus
             self.i2c_bus.unlock()
 
+    def _calibrate_serovo_poteometers(self) -> None:
+        self._SETUP_PIN = True
+        print("MotorController: Turning X Servo to %s DEG." % self.MIN_X_ANGLE)
+        print("MotorController: Turning Y Servo to %s DEG." % self.MIN_Y_ANGLE)
+        self.set_x_min()
+        self.set_y_min()
+        time.sleep(1.5)
+        print("MotorController: Turning X Servo to %s DEG." % self.MAX_X_ANGLE)
+        print("MotorController: Turning Y Servo to %s DEG." % self.MAX_Y_ANGLE)
+        self.set_x_max()
+        self.set_y_max()
+        time.sleep(1.5)
+        self._SETUP_PIN = False
+        time.sleep(.3)
