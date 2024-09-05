@@ -1,10 +1,10 @@
 import time
 
-from motorcontrollerft232h import MotorControllerFT232H
-from firingcontrollerft232h import FiringControllerFT232H
-from peripheralcontrollerft232h import PeripheralControllerFT232H
-from soundcontrollerft232h import SoundControllerFT232H
-from wranglercontrollerft232h import WranglerControllerFT232H
+from FT232HCode.motorcontrollerft232h import MotorControllerFT232H
+from FT232HCode.firingcontrollerft232h import FiringControllerFT232H
+from FT232HCode.peripheralcontrollerft232h import PeripheralControllerFT232H
+from FT232HCode.soundcontrollerft232h import SoundControllerFT232H
+from FT232HCode.wranglercontrollerft232h import WranglerControllerFT232H
 from IO.wranglercontroller import WranglerController
 from threading import Event, Thread
 motor = MotorControllerFT232H()
@@ -50,7 +50,8 @@ if __name__ == "__main__":
     motor.set_x_angle(0)
     motor.set_y_angle(0)
     time.sleep(2)
-    motor.idle(threadjoystickstate)
+    #sound.play_idle_beeping()
+    #motor.idle(threadjoystickstate)
 
     #motor.rotate_x_relative(10)
     '''
