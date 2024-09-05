@@ -1,3 +1,4 @@
+# Created by Steven Naliwajka, https://github.com/ConvexBurrito5/TF2SentryEE
 import time
 from adafruit_pca9685 import PCA9685
 from adafruit_motor import servo

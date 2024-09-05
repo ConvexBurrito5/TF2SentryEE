@@ -1,3 +1,4 @@
+# Created by Steven Naliwajka, https://github.com/ConvexBurrito5/TF2SentryEE
 import time
 
 import board
