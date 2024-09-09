@@ -1,9 +1,8 @@
 //Steven Naliwajka
 //TF2 Turret Proj
-//Code on the slave turret Componenet
-//On An Aurduino UNO:
-//See Attached Aurduino PNG for pinout
-
+//Code on the turret Component
+//On An Arduino UNO:
+//See Attached Arduino PNG for pinout
 
 //Transmittal Code and implementation of NRF24L01
 //based from 
@@ -12,40 +11,54 @@ https://forum.arduino.cc/t/simple-nrf24l01-2-4ghz-transceiver-demo/405123
 Robin2's
 */
 
+/*
+Takes in radio data from the radio through the nrf24l01 chip and the
+*/
+
 //Libs for the NRF24L01
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Wire.h>
 
-//Single Degree Values for calculating Live Position Data from
-//the X and Y Servos
-float singleDegreeX = 2.207407;
-float singleDegreeY = 3.1722222;
+//RANGE OF MOTION OF SERVOS
+int servoXRangeOfMotion = 270;
+iny servoYRangeOfMotion = 180;
 
+//Single Degree Values for calculating Live Position Data from
+//the X and Y Servos. Determined in the calibration setup;
+float singleDegreeX;
+float singleDegreeY;
+float maxRawX = 0;
+float maxRawY = 0;
+float minRawX = 0;
+float minRawY = 0;
 
 //NRF24L01 Radio Pins
 #define CE_PIN   9
 #define CSN_PIN 10
-//Servo Poteometer Analog feedback pins
-int pos1 = A0;
-int pos2 = A1;
+//Servo Potentiometer Analog feedback pins
+int A0RawPosX = A0;
+int A1RawPosY = A1;
 //Feedback from hardware switch
-int hardwareSwitch = 6;
+int HardwareSwitchPin = 6;
 //RelayControl
-int servoState = 4;
-int fireState = 5;
-//wranglerstatus
-int wranglerStatus = 2;
+int servoStatePin = 4;
+int fireStatePin = 5;
+//wranglerStatusPin
+int wranglerStatusPin = 2;
+//ServoCalibration --------------MAKE SURE 3 IS GOOD
+int servoCalibrationPin = 3;
 //Create Array to hold radio data
 int myData [7] = { 0};
+int radioData [7] = myData;
 
 //Address of NRF24L01 Receiver.. Itself
 const byte address[6] = "00001";
 RF24 radio(CE_PIN, CSN_PIN);
 
 struct DataPackage {
-  byte firestate = 5;
+  byte fireStatePin = 5;
     //0 (N), 1(F)
   byte movestate = 5;
     //0 (N), 1(R), 2(L), 3(U), 4(D)
@@ -60,10 +73,21 @@ void setup() {
   Serial.begin(9600);
   //Init pins
   //pinMode(10, OUTPUT);
-  pinMode(hardwareSwitch, INPUT_PULLUP);
-  pinMode(servoState, OUTPUT);
-  pinMode(fireState, OUTPUT);
-  pinMode(wranglerStatus, OUTPUT);
+  pinMode(HardwareSwitchPin, INPUT_PULLUP);
+  pinMode(servoStatePin, OUTPUT);
+  pinMode(fireStatePin, OUTPUT);
+  pinMode(wranglerStatusPin, OUTPUT);
+  pinMode(servoCalibrationPin, INPUT);
+
+  //Wait for the FT232H is ready before calling calibrateServos
+  while(1){
+    if(digitalRead(servoCalibrationPin)){
+        break;
+    };
+  };
+  //Calibrate Servos
+  calibrateServos();
+
   //Start NRF24L01
   radio.begin();
   //Begin listening for messages sent to the address
@@ -74,27 +98,26 @@ void setup() {
   radio.startListening();
 
 
-  //Set the Aurduino to be listening to I2C with the 'name':0x55
+  //Set the Arduino to be listening to I2C with the 'name':0x55
   Wire.begin(0x55);
   //If I2C request is made, call requestEvent method
   Wire.onRequest(requestEvent);
-
 }
 
 void loop() {
   //Updating the hardware relay to
-  if(!digitalRead(hardwareSwitch)){
-    digitalWrite(servoState, LOW);
-    digitalWrite(fireState, LOW);
+  if(!digitalRead(HardwareSwitchPin)){
+    digitalWrite(servoStatePin, LOW);
+    digitalWrite(fireStatePin, LOW);
   }else{
-    digitalWrite(servoState, HIGH);
-    //PIN fireState is switch
-    digitalWrite(fireState, HIGH);
+    digitalWrite(servoStatePin, HIGH);
+    //PIN fireStatePin is switch
+    digitalWrite(fireStatePin, HIGH);
   }
   //Testing
   //2 points of data to transfer, 0-270. Bits only handle up to 250. So there are going to be 4 bits.
-  int xPos = analogRead(pos1)/singleDegreeX;
-  int yPos = analogRead(pos2)/singleDegreeY;
+  int xPos = (analogRead(A0RawPosX)-minRawX)/singleDegreeX;
+  int yPos = (analogRead(A1RawPosY)-minRawY)/singleDegreeY;
   /*
   Serial.print("X Pos: ");
   Serial.print(xPos);
@@ -120,15 +143,15 @@ void loop() {
     //Intake message, sets message = to received data
     radio.read(&wranglerData, sizeof(DataPackage));
     /*
-    Serial.println(wranglerData.firestate);
+    Serial.println(wranglerData.fireStatePin);
     Serial.println(wranglerData.movestate);
     Serial.println("__________________");
     */
     //Moves message into an array
-    myData[4] = wranglerData.firestate;
+    myData[4] = wranglerData.fireStatePin;
     myData[5] = wranglerData.movestate;
     myData[6] = 1;
-    digitalWrite(wranglerStatus, HIGH);
+    digitalWrite(wranglerStatusPin, HIGH);
     //Serial.println(myData[4]);
     //Serial.println(myData[5]);
     delay(15);
@@ -136,13 +159,15 @@ void loop() {
    myData[4] = 0;
    myData[5] = 0;
    myData[6] = 0;
-   digitalWrite(wranglerStatus, LOW);
+   digitalWrite(wranglerStatusPin, LOW);
   }
   Serial.println(myData[4]);
   Serial.println(myData[5]);
   Serial.println("------");
   //Close out of the radio
   //radio.stopListening();
+  radioData=myData
+  myData = {0}
 }
 
 void requestEvent(){
@@ -153,9 +178,9 @@ void requestEvent(){
   // From what I understand, this is due to the I2C request timing out before
   // The calculations can be done. Only enough time to JUST send data.
   Serial.print("X Pos: ");
-  Serial.print(analogRead(pos1)/2.207407);
+  Serial.print(analogRead(A0RawPosX)/2.207407);
   Serial.print(" Y Pos: ");
-  Serial.println(analogRead(pos2)/3.1722222);
+  Serial.println(analogRead(A1RawPosY)/3.1722222);
   byte* byteData = (byte*)myData;
   for (size_t i = 0; i < sizeof myData; i++) {
     Serial.print("Byte ");
@@ -166,5 +191,20 @@ void requestEvent(){
   */
 
   //Write data to I2C..
-  Wire.write((byte *) myData, sizeof myData);
+  Wire.write((byte *) radioData, sizeof radioData);
+}
+
+void calibrateServos(){
+    while(digitalRead(servoCalibrationPin)){
+        maxRawX = max(maxRawX,digitalRead(A0RawPosX);
+        minRawX = min(minRawX,digitalRead(A0RawPosX);
+        maxRawY = max(maxRawY,digitalRead(A1RawPosY);
+        minRawY = min(minRawY,digitalRead(A1RawPosY);
+    };
+
+    maxRawX =- minRawX;
+    maxRawY =- minRawY;
+
+    singleDegreeX = servoXRangeOfMotion/maxRawX;
+    singleDegreeY = servoYRangeOfMotion/maxRawY;
 }

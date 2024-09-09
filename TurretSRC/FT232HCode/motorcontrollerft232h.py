@@ -59,7 +59,7 @@ class MotorControllerFT232H(MotorController):
 
         try:
             print("MotorController: Beginning motor calibration.")
-            self._calibrate_serovo_poteometers()
+            self._calibrate_servo_potentiometers()
         except:
             print("MotorController: Motor calibration failed.")
         else:
@@ -304,7 +304,7 @@ class MotorControllerFT232H(MotorController):
             # Finish by giving up the bus
             self.i2c_bus.unlock()
 
-    def _calibrate_serovo_poteometers(self) -> None:
+    def _calibrate_servo_potentiometers(self) -> None:
         self._SETUP_PIN = True
         print("MotorController: Turning X Servo to %s DEG." % self.MIN_X_ANGLE)
         print("MotorController: Turning Y Servo to %s DEG." % self.MIN_Y_ANGLE)
