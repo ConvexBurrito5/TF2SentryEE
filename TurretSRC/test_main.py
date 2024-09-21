@@ -12,9 +12,7 @@ fire = FiringControllerFT232H()
 periph = PeripheralControllerFT232H()
 sound = SoundControllerFT232H()
 check_for_wrangler = Event()
-print("test1")
 wrangler = WranglerControllerFT232H(motor, check_for_wrangler)
-print("test2")
 #sound.play_target_spotted()
 
 if __name__ == "__main__":
@@ -28,8 +26,10 @@ if __name__ == "__main__":
 
     motor.set_x_angle(0)
     motor.set_y_angle(0)
-    time.sleep(2)
-    sound.play_idle_beeping()
+    time.sleep(3)
+    motor.set_y_angle(100)
+    motor.set_x_angle(100)
+    #sound.play_idle_beeping()
     #motor.idle(threadjoystickstate)
 
     #motor.rotate_x_relative(10)

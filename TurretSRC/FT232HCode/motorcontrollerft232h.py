@@ -37,14 +37,25 @@ class MotorControllerFT232H(MotorController):
         # create i2c Bus
         self.i2c_bus = SingletonBoardFT232H().i2c_bus
 
+        self._SETUP_PIN = digitalio.DigitalInOut(board.C2)
+        self._SETUP_PIN.direction = digitalio.Direction.OUTPUT
+        self._LISTENING_PIN = digitalio.DigitalInOut(board.C3)
+        self._LISTENING_PIN.direction = digitalio.Direction.OUTPUT
+
         try:
-            self._SETUP_PIN = digitalio.DigitalInOut(board.C2)
-            self._SETUP_PIN.direction = digitalio.Direction.OUTPUT
+
+            print("1")
             # Create the PCA9685 slave on the I2C bus
             self.PCA = PCA9685(self.i2c_bus)
+            print("2")
+
             # Setup the SCL Freq
             self.PCA.frequency = 50
             self.PCA.channels[0].duty_cycle = 0x7FFF
+
+
+
+
             # DEFINE the servos HERE. In this case there is only one PCA9685 board here.
             # 500 & 2500 are the magic numbers for the Servos. Ripped off amazon page
             self.xAxis = servo.Servo(pwm_out=self.PCA.channels[0], min_pulse=self.X_MIN_PULSE,
@@ -59,7 +70,7 @@ class MotorControllerFT232H(MotorController):
 
         try:
             print("MotorController: Beginning motor calibration.")
-            self._calibrate_serovo_poteometers()
+            #self._calibrate_servo_potentiometer()
         except:
             print("MotorController: Motor calibration failed.")
         else:
@@ -304,17 +315,20 @@ class MotorControllerFT232H(MotorController):
             # Finish by giving up the bus
             self.i2c_bus.unlock()
 
-    def _calibrate_serovo_poteometers(self) -> None:
+    def _calibrate_servo_potentiometer(self) -> None:
         self._SETUP_PIN = True
         print("MotorController: Turning X Servo to %s DEG." % self.MIN_X_ANGLE)
         print("MotorController: Turning Y Servo to %s DEG." % self.MIN_Y_ANGLE)
         self.set_x_min()
         self.set_y_min()
-        time.sleep(1.5)
+        time.sleep(5)
         print("MotorController: Turning X Servo to %s DEG." % self.MAX_X_ANGLE)
         print("MotorController: Turning Y Servo to %s DEG." % self.MAX_Y_ANGLE)
         self.set_x_max()
         self.set_y_max()
-        time.sleep(1.5)
         self._SETUP_PIN = False
-        time.sleep(.3)
+
+        waitforinput = True
+        while waitforinput:
+            if self._LISTENING_PIN.value:
+                waitforinput = False

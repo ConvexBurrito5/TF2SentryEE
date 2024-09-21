@@ -51,6 +51,7 @@ void setup() {
     pinMode(up, INPUT_PULLUP);
     pinMode(down, INPUT_PULLUP);
     pinMode(fire, INPUT_PULLUP);
+
     //pinMode(ctrlSwitch, INPUT);
 
     //Start Serial..
@@ -116,11 +117,11 @@ void loop() {
   //Broadcast data
   radio.write(&wranglerData, sizeof(DataPackage));
   //Print data to serial for easy testing
-  /*
-  Serial.println(wranglerData.firestate);
-  Serial.println(wranglerData.movestate);
-  Serial.println("_____________________");
-  */
+
+  //Serial.println(wranglerData.firestate);
+  //Serial.println(wranglerData.movestate);
+  //Serial.println("_____________________");
+
   //5ms delay to allow for hardware to process
   delay(5);
 }
