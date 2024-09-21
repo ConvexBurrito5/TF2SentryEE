@@ -1,0 +1,38 @@
+import cv2
+from IO.camera import Camera
+
+
+'''
+Arducam Resolutions
+3264/2448	4:3     (15 fps)
+2592/1944	4:3     (15 fps)
+1920/1080	16:9    (30 fps)
+1600/1200	4:3     (30 fps)
+1280/720 	16:9    (30 fps)
+800/600		4:3     (30 fps)
+640/480		4:3     (30 fps)
+320/240 	4:3     (30 fps)
+'''
+class Arducam(Camera):
+    def __init__(self, resolution=(640,480), cap_fps=30) -> None:
+        super().__init__(resolution, cap_fps)
+
+        self.cap = cv2.VideoCapture(0,cv2.CAP_V4L2)
+        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.RESOLUTION[0])
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.RESOLUTION[1])
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.RESOLUTION[1])
+
+        self.print_info()
+
+
+    def get_frame(self) -> cv2.typing.MatLike:
+        """
+        Returns the frame that the camera is currently reading.
+        returns img:MatLike row,col,BGR24 (8 bits per color)
+        """
+        ret_val, img = self.cap.read()
+        if ret_val:
+            return img
+        else:
+            raise RuntimeError("frame was unable to be read...")

@@ -2,8 +2,8 @@ import cv2
 from IO.camera import Camera
 
 class DefaultCamera(Camera):
-    def __init__(self, resolution=(900,900), cap_fps=30, original_res=(900,900), dist_from_camera=14.8125, ppi=58) -> None:
-        super().__init__(resolution, cap_fps, original_res, dist_from_camera, ppi)
+    def __init__(self, resolution=(640,480), cap_fps=30) -> None:
+        super().__init__(resolution, cap_fps)
 
         # Dont worry about resizing image because
         # we're getting the correct res from the source.
@@ -25,4 +25,4 @@ class DefaultCamera(Camera):
         if ret_val:
             return img
         else:
-            print("frame was unable to be read...")
+            raise RuntimeError("frame was unable to be read...")
