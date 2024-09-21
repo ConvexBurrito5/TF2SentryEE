@@ -21,7 +21,6 @@ class Arducam(Camera):
         self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.RESOLUTION[0])
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.RESOLUTION[1])
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.RESOLUTION[1])
 
         self.print_info()
     
