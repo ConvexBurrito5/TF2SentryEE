@@ -15,6 +15,15 @@ class DefaultCamera(Camera):
         # the camera will give bad image if not configured this way.
         self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('I', '4', '2', '0'))
 
+        self.print_info()
+    
+    def print_info(self) -> None:
+        print("-------INFO--------")
+        print("Using resolution:",self.cap.get(cv2.CAP_PROP_FRAME_WIDTH),"x",self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        print("Using backend:",self.cap.getBackendName())
+        print("FPS: ",self.cap.get(cv2.CAP_PROP_FPS))
+
+
 
     def get_frame(self) -> cv2.typing.MatLike:
         """

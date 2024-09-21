@@ -24,6 +24,13 @@ class Arducam(Camera):
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.RESOLUTION[1])
 
         self.print_info()
+    
+    def print_info(self) -> None:
+        print("-------INFO--------")
+        print("Using resolution:",self.cap.get(cv2.CAP_PROP_FRAME_WIDTH),"x",self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        print("Using backend:",self.cap.getBackendName())
+        print("FPS: ",self.cap.get(cv2.CAP_PROP_FPS))
+
 
 
     def get_frame(self) -> cv2.typing.MatLike:
